@@ -2,12 +2,13 @@ import SwiftUI
 
 struct RoomsInputView: View {
     @StateObject private var vm = RoomsInputViewModel()
-    
+    @State private var goNext = false
+
     var isContinueButtonEnabled: Bool {
-        return vm.livingCount > 0 ||
-               vm.kitchenCount > 0 ||
-               vm.bathroomCount > 0 ||
-               vm.hallwayCount > 0
+        vm.livingCount > 0 ||
+        vm.kitchenCount > 0 ||
+        vm.bathroomCount > 0 ||
+        vm.hallwayCount > 0
     }
 
     var body: some View {
@@ -25,71 +26,70 @@ struct RoomsInputView: View {
                             title: "Жилая",
                             count: $vm.livingCount,
                             totalCount: vm.count(for: .living),
-                            rooms: vm.rooms(for: .living),
-                            onChange: vm.updateRoom
+                            roomIndices: vm.roomsIndices(for: .living),
+                            rooms: $vm.rooms
                         )
                         RoomTypeRow(
                             title: "Кухня",
                             count: $vm.kitchenCount,
                             totalCount: vm.count(for: .kitchen),
-                            rooms: vm.rooms(for: .kitchen),
-                            onChange: vm.updateRoom
+                            roomIndices: vm.roomsIndices(for: .kitchen),
+                            rooms: $vm.rooms
                         )
                         RoomTypeRow(
                             title: "Санузел",
                             count: $vm.bathroomCount,
                             totalCount: vm.count(for: .bathroom),
-                            rooms: vm.rooms(for: .bathroom),
-                            onChange: vm.updateRoom
+                            roomIndices: vm.roomsIndices(for: .bathroom),
+                            rooms: $vm.rooms
                         )
                         RoomTypeRow(
                             title: "Прихожая",
                             count: $vm.hallwayCount,
                             totalCount: vm.count(for: .hallway),
-                            rooms: vm.rooms(for: .hallway),
-                            onChange: vm.updateRoom
+                            roomIndices: vm.roomsIndices(for: .hallway),
+                            rooms: $vm.rooms
                         )
                     }
+
                     Text("Площадь квартиры: \(vm.totalArea(), specifier: "%.1f") м²")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                    
                 }
                 .ignoresSafeArea(edges: .bottom)
                 .listStyle(.insetGrouped)
-                .onTapGesture {
-                    hideKeyboard()
-                }
+                .onTapGesture { hideKeyboard() }
 
-
-                HStack{
+                HStack {
                     Button("Пропустить") {
-                        // позже тут можно сбросить данные или перейти дальше
-                        
+                        goNext = true
                     }
                     .foregroundColor(.black.opacity(0.7))
-                        .buttonStyle(.bordered)
-                        .controlSize(.large)
-                        .padding(.horizontal, 20)
-                        .tint(.gray)
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .padding(.horizontal, 20)
+                    .tint(.gray)
+
                     Spacer()
-                    
 
                     Button("Продолжить") {
-                        // переход на следующий экран
+                        goNext = true
                     }
-                        .buttonStyle(.borderedProminent)
-                        .controlSize(.large)
-                        .padding(.horizontal, 20)
-                        .tint(.blue)
-                        .disabled(!isContinueButtonEnabled)
-                        .opacity(isContinueButtonEnabled ? 1 : 0.7)
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
+                    .padding(.horizontal, 20)
+                    .tint(.blue)
+                    .disabled(!isContinueButtonEnabled)
+                    .opacity(isContinueButtonEnabled ? 1 : 0.7)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.1))
                 .ignoresSafeArea(.keyboard, edges: .bottom)
             }
             .navigationTitle("Комнаты")
+            .navigationDestination(isPresented: $goNext) {
+                MainEstimateView(rooms: vm.rooms)
+            }
         }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
@@ -104,15 +104,15 @@ private struct RoomTypeRow: View {
     let title: String
     @Binding var count: Int
     let totalCount: Int
-    let rooms: [RoomInput]
-    let onChange: (RoomInput) -> Void
+    let roomIndices: [Int]
+    @Binding var rooms: [RoomInput]
 
     @State private var isExpanded = false
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
-            ForEach(rooms) { room in
-                RoomParamsView(room: room, onChange: onChange)
+            ForEach(roomIndices, id: \.self) { idx in
+                RoomParamsView(room: $rooms[idx])
                     .padding(.vertical, 4)
             }
         } label: {
@@ -141,8 +141,7 @@ private struct RoomTypeRow: View {
 }
 
 private struct RoomParamsView: View {
-    @State var room: RoomInput
-    let onChange: (RoomInput) -> Void
+    @Binding var room: RoomInput
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -179,9 +178,6 @@ private struct RoomParamsView: View {
 
             Stepper("Окна: \(room.windows)", value: $room.windows, in: 0...10)
                 .padding(.vertical, 8)
-        }
-        .onChange(of: room) { _, updated in
-            onChange(updated)
         }
     }
 }
