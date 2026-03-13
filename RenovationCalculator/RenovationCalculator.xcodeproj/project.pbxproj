@@ -20,6 +20,10 @@
 		3105BE7A2F472DFF00268CC4 /* catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = 3105BE792F472DFF00268CC4 /* catalog.json */; };
 		3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */; };
 		3105BE7F2F47307400268CC4 /* MainEstimateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */; };
+		3155C1A02F63E0C7005C06F1 /* RoomsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */; };
+		3155C1A22F63E0DD005C06F1 /* RoomsInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */; };
+		3155C1A72F63FC54005C06F1 /* Extension+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1A62F63FC54005C06F1 /* Extension+View.swift */; };
+		3155C1A92F640F91005C06F1 /* QuantitySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +41,10 @@
 		3105BE792F472DFF00268CC4 /* catalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = catalog.json; sourceTree = "<group>"; };
 		3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogLoader.swift; sourceTree = "<group>"; };
 		3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEstimateViewModel.swift; sourceTree = "<group>"; };
+		3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsInputView.swift; sourceTree = "<group>"; };
+		3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsInputViewModel.swift; sourceTree = "<group>"; };
+		3155C1A62F63FC54005C06F1 /* Extension+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+View.swift"; sourceTree = "<group>"; };
+		3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantitySheetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +64,7 @@
 				3105BE742F4725EC00268CC4 /* App */,
 				3105BE622F47232F00268CC4 /* Models */,
 				3105BE6E2F47249B00268CC4 /* Services */,
+				3155C1A52F63FC2F005C06F1 /* Extension */,
 				3105BE712F4724CF00268CC4 /* Views */,
 				3105BE7B2F472EE100268CC4 /* DataManager */,
 				3105BE612F4722DC00268CC4 /* Resources */,
@@ -104,6 +113,9 @@
 			isa = PBXGroup;
 			children = (
 				3105BE582F47211F00268CC4 /* MainEstimateView.swift */,
+				3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */,
+				3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */,
+				3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */,
 				3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */,
 			);
 			path = Views;
@@ -124,6 +136,14 @@
 				3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */,
 			);
 			path = DataManager;
+			sourceTree = "<group>";
+		};
+		3155C1A52F63FC2F005C06F1 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				3155C1A62F63FC54005C06F1 /* Extension+View.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,7 +176,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					3105BE522F47211E00268CC4 = {
 						CreatedOnToolsVersion = 26.2;
@@ -200,13 +220,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				3105BE762F4725FA00268CC4 /* RootView.swift in Sources */,
+				3155C1A92F640F91005C06F1 /* QuantitySheetView.swift in Sources */,
+				3155C1A22F63E0DD005C06F1 /* RoomsInputViewModel.swift in Sources */,
 				3105BE592F47211F00268CC4 /* MainEstimateView.swift in Sources */,
+				3155C1A02F63E0C7005C06F1 /* RoomsInputView.swift in Sources */,
 				3105BE7F2F47307400268CC4 /* MainEstimateViewModel.swift in Sources */,
 				3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */,
 				3105BE642F47236900268CC4 /* Category.swift in Sources */,
 				3105BE782F472A0C00268CC4 /* Catalog.swift in Sources */,
 				3105BE702F4724B900268CC4 /* EstimateCalculator.swift in Sources */,
 				3105BE682F4723C600268CC4 /* WorkItem.swift in Sources */,
+				3155C1A72F63FC54005C06F1 /* Extension+View.swift in Sources */,
 				3105BE662F4723BB00268CC4 /* WorkSection.swift in Sources */,
 				3105BE572F47211F00268CC4 /* RenovationCalculatorApp.swift in Sources */,
 				3105BE6A2F4723DA00268CC4 /* EstimateLine.swift in Sources */,
@@ -275,6 +299,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -332,6 +357,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};

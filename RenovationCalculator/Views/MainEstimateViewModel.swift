@@ -11,8 +11,12 @@ import Combine
 final class MainEstimateViewModel: ObservableObject {
     @Published var categories: [Category] = []
     @Published var selectedCategoryIndex: Int = 0
+
     @Published var infoItem: WorkItem?
     @Published var quantityItem: WorkItem?
+    @Published var isQuantitySheetPresented: Bool = false
+
+    var roomOptions: [RoomOption] = []   // потом подставим реальные комнаты
 
     private let loader = CatalogLoader()
 
@@ -39,5 +43,7 @@ final class MainEstimateViewModel: ObservableObject {
 
     func showQuantity(_ item: WorkItem) {
         quantityItem = item
+        isQuantitySheetPresented = true
     }
 }
+
