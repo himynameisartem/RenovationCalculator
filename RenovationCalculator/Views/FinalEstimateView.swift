@@ -3,25 +3,15 @@ import SwiftUI
 struct FinalEstimateView: View {
     let lines: [MainEstimateViewModel.SummaryLine]
     let total: Double
-
-    let onBack: () -> Void
     let onReset: () -> Void
-    let onSave: () -> String?
+    let onSave: () -> Void
 
     @State private var showResetAlert = false
-    @State private var saveMessage: String?
 
     var body: some View {
         VStack(spacing: 12) {
-            HStack {
-                Button("Назад") { onBack() }
-                    .buttonStyle(.bordered)
-                Spacer()
-                Text("Смета").font(.headline)
-                Spacer()
-                Color.clear.frame(width: 60, height: 1)
-            }
-            .padding(.horizontal)
+            Text("Смета")
+                .font(.headline)
 
             if lines.isEmpty {
                 Text("Смета пустая")
@@ -51,7 +41,7 @@ struct FinalEstimateView: View {
 
             VStack(spacing: 10) {
                 Button("Сохранить") {
-                    saveMessage = onSave()
+                    onSave()
                 }
                 .buttonStyle(.borderedProminent)
 
@@ -65,19 +55,10 @@ struct FinalEstimateView: View {
         .alert("Уверены?", isPresented: $showResetAlert) {
             Button("Да, сбросить", role: .destructive) {
                 onReset()
-                onBack()
             }
             Button("Отмена", role: .cancel) { }
         } message: {
             Text("Если смета не сохранена, все расчеты будут удалены.")
-        }
-        .alert("Сохранение", isPresented: Binding(
-            get: { saveMessage != nil },
-            set: { _ in saveMessage = nil }
-        )) {
-            Button("Ок", role: .cancel) { saveMessage = nil }
-        } message: {
-            Text(saveMessage ?? "")
         }
     }
 }
