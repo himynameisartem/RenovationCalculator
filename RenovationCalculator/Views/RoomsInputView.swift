@@ -52,10 +52,10 @@ struct RoomsInputView: View {
                             )
                         }
 
-                        Text("Площадь квартиры: \(vm.totalArea(), specifier: "%.1f") м²")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .appListCardBackground()
+                    Text("Площадь квартиры: \(vm.totalArea(), specifier: "%.1f") м²")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .appListCardBackground()
                     }
                     .ignoresSafeArea(edges: .bottom)
                     .listStyle(.insetGrouped)
@@ -79,8 +79,10 @@ struct RoomsInputView: View {
                 }
             }
 
-            floatingBottomActions
-                .ignoresSafeArea(.keyboard, edges: .bottom)
+            if !vm.goNext {
+                floatingBottomActions
+                    .ignoresSafeArea(.keyboard, edges: .bottom)
+            }
 
             if keyboard.isVisible {
                 keyboardDoneButton

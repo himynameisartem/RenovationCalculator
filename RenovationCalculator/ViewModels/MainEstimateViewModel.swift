@@ -15,7 +15,7 @@ final class MainEstimateViewModel: ObservableObject {
     @Published var selectedItems: [String: Double] = [:]   // item.id -> quantity
 
     var roomOptions: [RoomOption] {
-        rooms.map { RoomOption(id: $0.id, name: $0.name, area: $0.area, isSelected: false) }
+        rooms.map { RoomOption(id: $0.id, name: $0.name, area: $0.effectiveArea, isSelected: false) }
     }
 
     private let catalogService: CatalogServiceProtocol
@@ -113,7 +113,7 @@ final class MainEstimateViewModel: ObservableObject {
     func suggestedQuantity(for item: WorkItem) -> Double? {
         let unit = item.unit.lowercased()
         if unit.contains("кв") || unit.contains("м2") {
-            let total = rooms.reduce(0) { $0 + $1.area }
+            let total = rooms.reduce(0) { $0 + $1.effectiveArea }
             return total > 0 ? total : nil
         }
         return nil
