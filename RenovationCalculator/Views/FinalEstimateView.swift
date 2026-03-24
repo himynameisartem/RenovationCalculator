@@ -52,32 +52,21 @@ struct FinalEstimateView: View {
                     }
                 }
                 .transparentListContent()
+//                .safeAreaInset(edge: .bottom) {
+//                    Color.clear
+//                        .frame(height: 130)
+//                }
             }
 
             Text("Итого: \(total, specifier: "%.0f") ₽")
                 .font(.title3)
                 .padding(.top, 4)
-
-            VStack(spacing: 10) {
-                Button("Сохранить") {
-                    viewModel.saveEstimate()
-                }
-                .buttonStyle(.borderedProminent)
-
-                Button("Сметы") {
-                    viewModel.openSavedEstimates()
-                }
-                .buttonStyle(.bordered)
-                .disabled(!viewModel.canOpenSavedEstimates)
-
-                Button("Рассчитать заново") {
-                    viewModel.startNewCalculation()
-                }
-                .buttonStyle(.bordered)
-            }
-            .padding(.bottom, 12)
         }
+        .padding(.bottom, 130)
         .appScreenBackground()
+        .overlay(alignment: .bottom) {
+            floatingBottomActions
+        }
         .alert("Уверены?", isPresented: $viewModel.showResetAlert) {
             Button("Да, сбросить", role: .destructive) {
                 viewModel.confirmResetAndStartNewCalculation()
@@ -91,5 +80,58 @@ struct FinalEstimateView: View {
         } message: {
             Text(viewModel.saveMessage)
         }
+    }
+
+    private var floatingBottomActions: some View {
+        VStack(spacing: 10) {
+            Button {
+                viewModel.saveEstimate()
+            } label: {
+                Text("Сохранить")
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, minHeight: 45)
+                    .background(
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .fill(Color.blue)
+                    )
+            }
+            .buttonStyle(.plain)
+
+            HStack(spacing: 12) {
+                Button {
+                    if viewModel.canOpenSavedEstimates {
+                        viewModel.openSavedEstimates()
+                    }
+                } label: {
+                    Text("Сметы")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .fill(viewModel.canOpenSavedEstimates ? Color.blue : Color(.systemGray5))
+                        )
+                }
+                .buttonStyle(.plain)
+                .allowsHitTesting(viewModel.canOpenSavedEstimates)
+
+                Button {
+                    viewModel.startNewCalculation()
+                } label: {
+                    Text("Рассчитать заново")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .fill(Color.red)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
     }
 }
