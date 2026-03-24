@@ -107,10 +107,13 @@ struct MainEstimateView: View {
                                     .padding(.leading, 20)
                                 }
                                 .listRowInsets(EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 12))
+                                .appListCardBackground()
                             }
                         }
+                        .appListCardBackground()
                     }
                 }
+                .transparentListContent()
                 .onChange(of: vm.selectedCategoryIndex) { _, _ in
                     expandedSectionIDs.removeAll()
                 }
@@ -146,7 +149,7 @@ struct MainEstimateView: View {
                         .disabled(!vm.hasAnySelected())
                     }
                     .padding()
-                    .background(.ultraThinMaterial)
+                    .background(Color.clear)
                 }
             }
             .onAppear { vm.load() }
@@ -178,6 +181,7 @@ struct MainEstimateView: View {
                 .padding()
             }
         }
+        .appScreenBackground()
         .navigationDestination(isPresented: $showFinal) {
             FinalEstimateView(
                 lines: vm.summaryLines(),

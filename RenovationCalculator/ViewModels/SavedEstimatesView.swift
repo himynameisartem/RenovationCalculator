@@ -51,6 +51,7 @@ struct SavedEstimatesView: View {
                                 }
                                 .padding(.vertical, 6)
                             }
+                            .appListCardBackground()
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     viewModel.deleteEstimate(estimate)
@@ -61,6 +62,7 @@ struct SavedEstimatesView: View {
                         }
                     }
                     .listStyle(.insetGrouped)
+                    .transparentListContent()
 
                     Button("Сделать новый расчет") {
                         viewModel.showNewEstimate()
@@ -69,6 +71,7 @@ struct SavedEstimatesView: View {
                     .padding()
                 }
             }
+            .appScreenBackground()
             .navigationTitle("Сохраненные сметы")
             .onAppear {
                 viewModel.onAppear()
@@ -99,9 +102,11 @@ private struct SavedEstimateDetailView: View {
                             Spacer()
                             Text("\(line.subtotal, specifier: "%.0f") ₽")
                         }
+                        .appListCardBackground()
+                        .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
                     }
                 }
-                .listStyle(.plain)
+                .transparentListContent()
             }
 
             Text("Итого: \(estimate.total, specifier: "%.0f") ₽")
@@ -120,6 +125,7 @@ private struct SavedEstimateDetailView: View {
             .buttonStyle(.borderedProminent)
             .padding()
         }
+        .appScreenBackground()
         .navigationTitle("Смета")
         .navigationBarTitleDisplayMode(.inline)
     }

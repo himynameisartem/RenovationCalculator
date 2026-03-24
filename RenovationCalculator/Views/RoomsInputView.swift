@@ -15,6 +15,7 @@ struct RoomsInputView: View {
                         Text("Укажите количество комнат и их параметры. Окна стандартные по размеру.")
                             .font(.footnote)
                             .foregroundColor(.secondary)
+                            .appListCardBackground()
                     }
 
                     Section("Комнаты") {
@@ -51,9 +52,11 @@ struct RoomsInputView: View {
                     Text("Площадь квартиры: \(vm.totalArea(), specifier: "%.1f") м²")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
+                        .appListCardBackground()
                 }
                 .ignoresSafeArea(edges: .bottom)
                 .listStyle(.insetGrouped)
+                .transparentListContent()
                 .onTapGesture { hideKeyboard() }
 
                 HStack {
@@ -86,9 +89,10 @@ struct RoomsInputView: View {
                     .opacity(vm.isContinueButtonEnabled ? 1 : 0.7)
                 }
                 .padding()
-                .background(Color.gray.opacity(0.1))
+                .background(Color.clear)
                 .ignoresSafeArea(.keyboard, edges: .bottom)
             }
+            .appScreenBackground()
             .navigationTitle("Комнаты")
             .navigationDestination(isPresented: $vm.goNext) {
                 MainEstimateView(rooms: vm.rooms)
@@ -136,6 +140,7 @@ private struct RoomTypeRow: View {
                 .labelsHidden()
             }
         }
+        .appListCardBackground()
         .onChange(of: count) { _, _ in
             if count > 0 { isExpanded = true }
             if count == 0 { isExpanded = false }

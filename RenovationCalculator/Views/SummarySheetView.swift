@@ -36,9 +36,11 @@ struct SummarySheet: View {
                                     .foregroundColor(.red)
                             }
                         }
+                        .appListCardBackground()
                     }
                 }
                 .listStyle(.plain)
+                .transparentListContent()
             }
 
             Text("Итого: \(total, specifier: "%.0f") ₽")
@@ -60,6 +62,7 @@ struct SummarySheet: View {
             }
             .padding(.top, 8)
         }
+        .appScreenBackground()
         .padding()
     }
 }

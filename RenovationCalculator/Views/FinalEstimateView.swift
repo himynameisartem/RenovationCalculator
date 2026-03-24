@@ -47,9 +47,11 @@ struct FinalEstimateView: View {
                             Spacer()
                             Text("\(line.subtotal, specifier: "%.0f") ₽")
                         }
+                        .appListCardBackground()
+                        .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
                     }
                 }
-                .listStyle(.plain)
+                .transparentListContent()
             }
 
             Text("Итого: \(total, specifier: "%.0f") ₽")
@@ -75,6 +77,7 @@ struct FinalEstimateView: View {
             }
             .padding(.bottom, 12)
         }
+        .appScreenBackground()
         .alert("Уверены?", isPresented: $viewModel.showResetAlert) {
             Button("Да, сбросить", role: .destructive) {
                 viewModel.confirmResetAndStartNewCalculation()
