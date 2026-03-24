@@ -2,6 +2,8 @@ import SwiftUI
 
 struct RoomsInputView: View {
     @StateObject private var vm = RoomsInputViewModel()
+    @EnvironmentObject private var store: SavedEstimatesStore
+    @EnvironmentObject private var router: AppRouter
     @State private var goNext = false
 
     var isContinueButtonEnabled: Bool {
@@ -61,6 +63,13 @@ struct RoomsInputView: View {
                 .onTapGesture { hideKeyboard() }
 
                 HStack {
+                    Button("Сметы") {
+                        router.show(.savedEstimates, resetViewTree: true)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+                    .disabled(!store.hasSavedEstimates)
+
                     Button("Пропустить") {
                         goNext = true
                     }

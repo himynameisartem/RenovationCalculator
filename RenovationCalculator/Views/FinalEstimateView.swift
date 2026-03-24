@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct FinalEstimateView: View {
+    @EnvironmentObject private var store: SavedEstimatesStore
+    @EnvironmentObject private var router: AppRouter
+
     let lines: [MainEstimateViewModel.SummaryLine]
     let total: Double
     let onReset: () -> Void
@@ -9,6 +12,7 @@ struct FinalEstimateView: View {
     @State private var showResetAlert = false
     @State private var showSaveAlert = false
     @State private var saveMessage = ""
+    @State private var isSaved = false
 
     var body: some View {
         VStack(spacing: 12) {
@@ -44,12 +48,25 @@ struct FinalEstimateView: View {
             VStack(spacing: 10) {
                 Button("Сохранить") {
                     saveMessage = onSave()
+                    store.reload()
+                    isSaved = !saveMessage.lowercased().contains("ошибка")
                     showSaveAlert = true
                 }
                 .buttonStyle(.borderedProminent)
 
+                Button("Сметы") {
+                    store.reload()
+                    router.show(.savedEstimates, resetViewTree: true)
+                }
+                .buttonStyle(.bordered)
+                .disabled(store.estimates.isEmpty && !isSaved)
+
                 Button("Рассчитать заново") {
-                    showResetAlert = true
+                    if isSaved {
+                        router.show(.rooms, resetViewTree: true)
+                    } else {
+                        showResetAlert = true
+                    }
                 }
                 .buttonStyle(.bordered)
             }
@@ -58,6 +75,7 @@ struct FinalEstimateView: View {
         .alert("Уверены?", isPresented: $showResetAlert) {
             Button("Да, сбросить", role: .destructive) {
                 onReset()
+                router.show(.rooms, resetViewTree: true)
             }
             Button("Отмена", role: .cancel) { }
         } message: {

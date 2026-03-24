@@ -22,13 +22,36 @@ struct SavedEstimate: Codable, Identifiable {
     let id: UUID
     let createdAt: Date
     let total: Double
+    let rooms: [RoomInput]
+    let selectedItems: [String: Double]
     let lines: [SavedEstimateLine]
 
-    init(total: Double, lines: [SavedEstimateLine]) {
-        self.id = UUID()
+    init(id: UUID = UUID(), total: Double, rooms: [RoomInput], selectedItems: [String: Double], lines: [SavedEstimateLine]) {
+        self.id = id
         self.createdAt = Date()
         self.total = total
+        self.rooms = rooms
+        self.selectedItems = selectedItems
         self.lines = lines
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt
+        case total
+        case rooms
+        case selectedItems
+        case lines
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        total = try container.decode(Double.self, forKey: .total)
+        rooms = try container.decodeIfPresent([RoomInput].self, forKey: .rooms) ?? []
+        selectedItems = try container.decodeIfPresent([String: Double].self, forKey: .selectedItems) ?? [:]
+        lines = try container.decode([SavedEstimateLine].self, forKey: .lines)
     }
 }
 
@@ -61,8 +84,20 @@ enum EstimateStorage {
         (try? loadAll().isEmpty) == false
     }
 
-    static func save(total: Double, lines: [SavedEstimateLine]) throws -> SavedEstimate {
-        let estimate = SavedEstimate(total: total, lines: lines)
+    static func save(
+        id: UUID? = nil,
+        total: Double,
+        rooms: [RoomInput],
+        selectedItems: [String: Double],
+        lines: [SavedEstimateLine]
+    ) throws -> SavedEstimate {
+        let estimate = SavedEstimate(
+            id: id ?? UUID(),
+            total: total,
+            rooms: rooms,
+            selectedItems: selectedItems,
+            lines: lines
+        )
         let data = try encoder.encode(estimate)
         let fileURL = directoryURL.appendingPathComponent("\(estimate.id.uuidString).json")
         try data.write(to: fileURL, options: .atomic)

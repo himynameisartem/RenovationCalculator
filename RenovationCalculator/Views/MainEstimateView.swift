@@ -6,14 +6,23 @@ struct MainEstimateView: View {
     @State private var showFinal = false
     @State private var quantitySheetDetent: PresentationDetent = .fraction(0.5)
 
-    init(rooms: [RoomInput]) {
-        _vm = StateObject(wrappedValue: MainEstimateViewModel(rooms: rooms))
+    init(rooms: [RoomInput], initialSelectedItems: [String: Double] = [:], editingEstimateID: UUID? = nil) {
+        _vm = StateObject(
+            wrappedValue: MainEstimateViewModel(
+                rooms: rooms,
+                initialSelectedItems: initialSelectedItems,
+                editingEstimateID: editingEstimateID
+            )
+        )
     }
 
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                if vm.categories.isEmpty {
+                if vm.isLoading && vm.categories.isEmpty {
+                    ProgressView("Загрузка каталога...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if vm.categories.isEmpty {
                     Text("Нет данных")
                         .foregroundColor(.secondary)
                         .padding(.top, 40)
@@ -73,14 +82,14 @@ struct MainEstimateView: View {
                                                 Image(systemName: "info.circle")
                                                     .imageScale(.large)
                                             }
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .buttonStyle(.plain)
+
+                                            Spacer()
 
                                             Text("\(item.price, specifier: "%.0f") ₽ / \(item.unit)")
                                                 .font(.caption)
                                                 .foregroundColor(.secondary)
-                                                .multilineTextAlignment(.center)
-
-                                            Spacer()
+                                                .multilineTextAlignment(.trailing)
                                         }
                                     }
                                     .padding(.vertical, 4)
@@ -153,10 +162,7 @@ struct MainEstimateView: View {
                     if let photos = item.photos, !photos.isEmpty {
                         TabView {
                             ForEach(photos, id: \.self) { name in
-                                Image(name)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .cornerRadius(12)
+                                EstimatePhotoView(source: name)
                                     .padding(.horizontal)
                             }
                         }
@@ -204,6 +210,44 @@ struct MainEstimateView: View {
                 return
             }
             quantitySheetDetent = vm.roomOptions.count > 4 ? .large : .fraction(0.5)
+        }
+    }
+}
+
+private struct EstimatePhotoView: View {
+    let source: String
+
+    var body: some View {
+        if let url = URL(string: source), url.scheme?.hasPrefix("http") == true {
+            AsyncImage(url: url) { phase in
+                switch phase {
+                case .empty:
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.15))
+                        ProgressView()
+                    }
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .cornerRadius(12)
+                case .failure:
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.15))
+                        Text("Фото не загрузилось")
+                            .foregroundColor(.secondary)
+                    }
+                @unknown default:
+                    EmptyView()
+                }
+            }
+        } else {
+            Image(source)
+                .resizable()
+                .scaledToFit()
+                .cornerRadius(12)
         }
     }
 }

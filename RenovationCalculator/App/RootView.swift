@@ -8,20 +8,26 @@
 import SwiftUI
 
 struct RootView: View {
-    @State private var showSavedEstimates = EstimateStorage.hasSavedEstimates()
+    @StateObject private var store = SavedEstimatesStore()
+    @StateObject private var router = AppRouter()
+    @State private var initialized = false
 
     var body: some View {
-        if showSavedEstimates {
-            SavedEstimatesView(
-                onNewCalculation: {
-                    showSavedEstimates = false
-                },
-                onBecomeEmpty: {
-                    showSavedEstimates = false
-                }
-            )
-        } else {
-            RoomsInputView()
+        Group {
+            switch router.rootScreen {
+            case .savedEstimates:
+                SavedEstimatesView()
+            case .rooms:
+                RoomsInputView()
+            }
+        }
+        .id(router.rootViewID)
+        .environmentObject(store)
+        .environmentObject(router)
+        .onAppear {
+            guard !initialized else { return }
+            initialized = true
+            router.show(store.hasSavedEstimates ? .savedEstimates : .rooms)
         }
     }
 }

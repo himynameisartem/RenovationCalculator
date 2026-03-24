@@ -54,7 +54,7 @@ final class RoomsInputViewModel: ObservableObject {
 }
 
 struct RoomInput: Identifiable, Equatable, Codable {
-    let id = UUID()
+    let id: UUID
     let type: RoomType
     var index: Int
     var name: String
@@ -63,6 +63,7 @@ struct RoomInput: Identifiable, Equatable, Codable {
     var windows: Int = 0
 
     init(type: RoomType, index: Int) {
+        self.id = UUID()
         self.type = type
         self.index = index
         self.name = index > 1 ? "\(type.title) \(index)" : type.title

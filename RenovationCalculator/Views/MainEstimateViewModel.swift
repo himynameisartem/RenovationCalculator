@@ -3,6 +3,7 @@ import Combine
 
 @MainActor
 final class MainEstimateViewModel: ObservableObject {
+    @Published var isLoading = false
     @Published var categories: [Category] = []
     @Published var selectedCategoryIndex: Int = 0
 
@@ -19,9 +20,12 @@ final class MainEstimateViewModel: ObservableObject {
 
     private let loader = CatalogLoader()
     private let rooms: [RoomInput]
+    private let editingEstimateID: UUID?
 
-    init(rooms: [RoomInput]) {
+    init(rooms: [RoomInput], initialSelectedItems: [String: Double] = [:], editingEstimateID: UUID? = nil) {
         self.rooms = rooms
+        self._selectedItems = Published(initialValue: initialSelectedItems)
+        self.editingEstimateID = editingEstimateID
     }
 
 
@@ -31,14 +35,20 @@ final class MainEstimateViewModel: ObservableObject {
     }
 
     func load() {
-        do {
-            let catalog = try loader.loadFromBundle()
-            categories = catalog.categories
-            if selectedCategoryIndex >= categories.count {
-                selectedCategoryIndex = 0
+        isLoading = true
+
+        Task {
+            defer { isLoading = false }
+
+            do {
+                let catalog = try await loader.loadRemoteCatalog()
+                categories = catalog.categories
+                if selectedCategoryIndex >= categories.count {
+                    selectedCategoryIndex = 0
+                }
+            } catch {
+                print("Load error: \(error)")
             }
-        } catch {
-            print("Load error: \(error)")
         }
     }
 
@@ -111,7 +121,13 @@ final class MainEstimateViewModel: ObservableObject {
             )
         }
         do {
-            let estimate = try EstimateStorage.save(total: totalSum(), lines: lines)
+            let estimate = try EstimateStorage.save(
+                id: editingEstimateID,
+                total: totalSum(),
+                rooms: rooms,
+                selectedItems: selectedItems,
+                lines: lines
+            )
 
             let formatter = DateFormatter()
             formatter.locale = Locale(identifier: "ru_RU")

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		310172A52F72671200C54158 /* EstimateStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172A42F72671200C54158 /* EstimateStorage.swift */; };
 		310172A72F72672500C54158 /* SavedEstimatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172A62F72672500C54158 /* SavedEstimatesView.swift */; };
+		310172A92F726A9300C54158 /* SavedEstimatesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172A82F726A9300C54158 /* SavedEstimatesStore.swift */; };
+		310172AB2F726AA100C54158 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172AA2F726AA100C54158 /* AppRouter.swift */; };
 		3105BE572F47211F00268CC4 /* RenovationCalculatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE562F47211F00268CC4 /* RenovationCalculatorApp.swift */; };
 		3105BE592F47211F00268CC4 /* MainEstimateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE582F47211F00268CC4 /* MainEstimateView.swift */; };
 		3105BE5B2F47212000268CC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3105BE5A2F47212000268CC4 /* Assets.xcassets */; };
@@ -19,7 +21,6 @@
 		3105BE702F4724B900268CC4 /* EstimateCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE6F2F4724B900268CC4 /* EstimateCalculator.swift */; };
 		3105BE762F4725FA00268CC4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE752F4725FA00268CC4 /* RootView.swift */; };
 		3105BE782F472A0C00268CC4 /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE772F472A0C00268CC4 /* Catalog.swift */; };
-		3105BE7A2F472DFF00268CC4 /* catalog.json in Resources */ = {isa = PBXBuildFile; fileRef = 3105BE792F472DFF00268CC4 /* catalog.json */; };
 		3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */; };
 		3105BE7F2F47307400268CC4 /* MainEstimateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */; };
 		3155C1A02F63E0C7005C06F1 /* RoomsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */; };
@@ -33,6 +34,8 @@
 /* Begin PBXFileReference section */
 		310172A42F72671200C54158 /* EstimateStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateStorage.swift; sourceTree = "<group>"; };
 		310172A62F72672500C54158 /* SavedEstimatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedEstimatesView.swift; sourceTree = "<group>"; };
+		310172A82F726A9300C54158 /* SavedEstimatesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedEstimatesStore.swift; sourceTree = "<group>"; };
+		310172AA2F726AA100C54158 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		3105BE532F47211E00268CC4 /* RenovationCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenovationCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3105BE562F47211F00268CC4 /* RenovationCalculatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenovationCalculatorApp.swift; sourceTree = "<group>"; };
 		3105BE582F47211F00268CC4 /* MainEstimateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEstimateView.swift; sourceTree = "<group>"; };
@@ -44,7 +47,6 @@
 		3105BE6F2F4724B900268CC4 /* EstimateCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateCalculator.swift; sourceTree = "<group>"; };
 		3105BE752F4725FA00268CC4 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3105BE772F472A0C00268CC4 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
-		3105BE792F472DFF00268CC4 /* catalog.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = catalog.json; sourceTree = "<group>"; };
 		3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogLoader.swift; sourceTree = "<group>"; };
 		3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEstimateViewModel.swift; sourceTree = "<group>"; };
 		3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsInputView.swift; sourceTree = "<group>"; };
@@ -92,7 +94,6 @@
 			isa = PBXGroup;
 			children = (
 				3105BE5A2F47212000268CC4 /* Assets.xcassets */,
-				3105BE792F472DFF00268CC4 /* catalog.json */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -114,6 +115,7 @@
 			children = (
 				310172A42F72671200C54158 /* EstimateStorage.swift */,
 				3105BE6F2F4724B900268CC4 /* EstimateCalculator.swift */,
+				310172A82F726A9300C54158 /* SavedEstimatesStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -138,6 +140,7 @@
 			children = (
 				3105BE562F47211F00268CC4 /* RenovationCalculatorApp.swift */,
 				3105BE752F4725FA00268CC4 /* RootView.swift */,
+				310172AA2F726AA100C54158 /* AppRouter.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -220,7 +223,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3105BE5B2F47212000268CC4 /* Assets.xcassets in Resources */,
-				3105BE7A2F472DFF00268CC4 /* catalog.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,9 +240,11 @@
 				3105BE592F47211F00268CC4 /* MainEstimateView.swift in Sources */,
 				310172A52F72671200C54158 /* EstimateStorage.swift in Sources */,
 				310172A72F72672500C54158 /* SavedEstimatesView.swift in Sources */,
+				310172A92F726A9300C54158 /* SavedEstimatesStore.swift in Sources */,
 				3155C1A02F63E0C7005C06F1 /* RoomsInputView.swift in Sources */,
 				3105BE7F2F47307400268CC4 /* MainEstimateViewModel.swift in Sources */,
 				3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */,
+				310172AB2F726AA100C54158 /* AppRouter.swift in Sources */,
 				3105BE642F47236900268CC4 /* Category.swift in Sources */,
 				3105BE782F472A0C00268CC4 /* Catalog.swift in Sources */,
 				3155C1AF2F642AC0005C06F1 /* FinalEstimateView.swift in Sources */,
