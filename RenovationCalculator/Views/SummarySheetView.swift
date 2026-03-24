@@ -27,8 +27,11 @@ struct SummarySheet: View {
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
+
                             Spacer()
+
                             Text("\(line.subtotal, specifier: "%.0f") ₽")
+
                             Button {
                                 onRemove(line.itemId)
                             } label: {
@@ -36,7 +39,8 @@ struct SummarySheet: View {
                                     .foregroundColor(.red)
                             }
                         }
-                        .appListCardBackground()
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 8, leading: 12, bottom: 8, trailing: 12))
                     }
                 }
                 .listStyle(.plain)
@@ -62,7 +66,7 @@ struct SummarySheet: View {
             }
             .padding(.top, 8)
         }
-        .appScreenBackground()
         .padding()
+        .background(Color.clear)
     }
 }
