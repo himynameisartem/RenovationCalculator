@@ -1,83 +1,93 @@
 import SwiftUI
+import Combine
 
 struct RoomsInputView: View {
     @StateObject private var vm: RoomsInputViewModel
+    @StateObject private var keyboard = KeyboardObserver()
 
     init(viewModel: RoomsInputViewModel) {
         _vm = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 0) {
-                List {
-                    Section {
-                        Text("Укажите количество комнат и их параметры. Окна стандартные по размеру.")
-                            .font(.footnote)
+        ZStack(alignment: .bottom) {
+            NavigationStack {
+                VStack(spacing: 0) {
+                    List {
+                        Section {
+                            Text("Укажите количество комнат и их параметры. Окна стандартные по размеру.")
+                                .font(.footnote)
+                                .foregroundColor(.secondary)
+                                .appListCardBackground()
+                        }
+
+                        Section("Комнаты") {
+                            RoomTypeRow(
+                                title: "Жилая",
+                                count: $vm.livingCount,
+                                totalCount: vm.count(for: .living),
+                                roomIndices: vm.roomsIndices(for: .living),
+                                rooms: $vm.rooms
+                            )
+                            RoomTypeRow(
+                                title: "Кухня",
+                                count: $vm.kitchenCount,
+                                totalCount: vm.count(for: .kitchen),
+                                roomIndices: vm.roomsIndices(for: .kitchen),
+                                rooms: $vm.rooms
+                            )
+                            RoomTypeRow(
+                                title: "Санузел",
+                                count: $vm.bathroomCount,
+                                totalCount: vm.count(for: .bathroom),
+                                roomIndices: vm.roomsIndices(for: .bathroom),
+                                rooms: $vm.rooms
+                            )
+                            RoomTypeRow(
+                                title: "Прихожая",
+                                count: $vm.hallwayCount,
+                                totalCount: vm.count(for: .hallway),
+                                roomIndices: vm.roomsIndices(for: .hallway),
+                                rooms: $vm.rooms
+                            )
+                        }
+
+                        Text("Площадь квартиры: \(vm.totalArea(), specifier: "%.1f") м²")
+                            .font(.subheadline)
                             .foregroundColor(.secondary)
                             .appListCardBackground()
                     }
-
-                    Section("Комнаты") {
-                        RoomTypeRow(
-                            title: "Жилая",
-                            count: $vm.livingCount,
-                            totalCount: vm.count(for: .living),
-                            roomIndices: vm.roomsIndices(for: .living),
-                            rooms: $vm.rooms
-                        )
-                        RoomTypeRow(
-                            title: "Кухня",
-                            count: $vm.kitchenCount,
-                            totalCount: vm.count(for: .kitchen),
-                            roomIndices: vm.roomsIndices(for: .kitchen),
-                            rooms: $vm.rooms
-                        )
-                        RoomTypeRow(
-                            title: "Санузел",
-                            count: $vm.bathroomCount,
-                            totalCount: vm.count(for: .bathroom),
-                            roomIndices: vm.roomsIndices(for: .bathroom),
-                            rooms: $vm.rooms
-                        )
-                        RoomTypeRow(
-                            title: "Прихожая",
-                            count: $vm.hallwayCount,
-                            totalCount: vm.count(for: .hallway),
-                            roomIndices: vm.roomsIndices(for: .hallway),
-                            rooms: $vm.rooms
-                        )
+                    .ignoresSafeArea(edges: .bottom)
+                    .listStyle(.insetGrouped)
+                    .transparentListContent()
+                    .safeAreaInset(edge: .bottom) {
+                        Color.clear
+                            .frame(height: vm.canOpenSavedEstimates ? 130 : 72)
                     }
+                    .onTapGesture { hideKeyboard() }
+                }
+                .appScreenBackground()
+                .navigationTitle("Комнаты")
+                .navigationDestination(isPresented: $vm.goNext) {
+                    MainEstimateView(rooms: vm.rooms)
+                }
+                .toolbar {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("Готово") { hideKeyboard() }
+                    }
+                }
+            }
 
-                    Text("Площадь квартиры: \(vm.totalArea(), specifier: "%.1f") м²")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .appListCardBackground()
-                }
-                .ignoresSafeArea(edges: .bottom)
-                .listStyle(.insetGrouped)
-                .transparentListContent()
-                .safeAreaInset(edge: .bottom) {
-                    Color.clear
-                        .frame(height: vm.canOpenSavedEstimates ? 130 : 72)
-                }
-                .onTapGesture { hideKeyboard() }
-            }
-            .appScreenBackground()
-            .overlay(alignment: .bottom) {
-                floatingBottomActions
-            }
-            .navigationTitle("Комнаты")
-            .navigationDestination(isPresented: $vm.goNext) {
-                MainEstimateView(rooms: vm.rooms)
+            floatingBottomActions
+                .ignoresSafeArea(.keyboard, edges: .bottom)
+
+            if keyboard.isVisible {
+                keyboardDoneButton
             }
         }
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Готово") { hideKeyboard() }
-            }
-        }
+        .appScreenBackground()
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 
     private var floatingBottomActions: some View {
@@ -134,6 +144,28 @@ struct RoomsInputView: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 12)
         .ignoresSafeArea(.keyboard, edges: .bottom)
+    }
+
+    private var keyboardDoneButton: some View {
+        HStack {
+            Spacer()
+
+            Button("Готово") {
+                hideKeyboard()
+            }
+            .font(.headline)
+            .foregroundColor(.white)
+            .padding(.horizontal, 18)
+            .frame(height: 40)
+            .background(
+                Capsule()
+                    .fill(Color.blue)
+            )
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, keyboard.visibleHeight + 6)
+        .transition(.opacity)
+        .animation(.easeInOut(duration: 0.2), value: keyboard.isVisible)
     }
 }
 
@@ -227,4 +259,45 @@ private struct RoomParamsView: View {
             router: AppRouter()
         )
     )
+}
+
+@MainActor
+private final class KeyboardObserver: ObservableObject {
+    @Published var height: CGFloat = 0
+
+    private var cancellables = Set<AnyCancellable>()
+
+    var isVisible: Bool {
+        height > 0
+    }
+
+    var visibleHeight: CGFloat {
+        max(0, height - safeAreaBottomInset)
+    }
+
+    init() {
+        let willShow = NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)
+            .compactMap { notification -> CGFloat? in
+                guard let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else {
+                    return nil
+                }
+                return frame.height
+            }
+
+        let willHide = NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)
+            .map { _ in CGFloat.zero }
+
+        willShow
+            .merge(with: willHide)
+            .receive(on: RunLoop.main)
+            .assign(to: &$height)
+    }
+
+    private var safeAreaBottomInset: CGFloat {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first(where: \.isKeyWindow)?
+            .safeAreaInsets.bottom ?? 0
+    }
 }
