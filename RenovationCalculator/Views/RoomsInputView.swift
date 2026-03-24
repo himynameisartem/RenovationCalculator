@@ -57,42 +57,16 @@ struct RoomsInputView: View {
                 .ignoresSafeArea(edges: .bottom)
                 .listStyle(.insetGrouped)
                 .transparentListContent()
-                .onTapGesture { hideKeyboard() }
-
-                HStack {
-                    Button("Сметы") {
-                        vm.openSavedEstimates()
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-                    .disabled(!vm.canOpenSavedEstimates)
-
-                    Button("Пропустить") {
-                        vm.skip()
-                    }
-                    .foregroundColor(.black.opacity(0.7))
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-                    .padding(.horizontal, 20)
-                    .tint(.gray)
-
-                    Spacer()
-
-                    Button("Продолжить") {
-                        vm.continueToEstimate()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .padding(.horizontal, 20)
-                    .tint(.blue)
-                    .disabled(!vm.isContinueButtonEnabled)
-                    .opacity(vm.isContinueButtonEnabled ? 1 : 0.7)
+                .safeAreaInset(edge: .bottom) {
+                    Color.clear
+                        .frame(height: vm.canOpenSavedEstimates ? 130 : 72)
                 }
-                .padding()
-                .background(Color.clear)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
+                .onTapGesture { hideKeyboard() }
             }
             .appScreenBackground()
+            .overlay(alignment: .bottom) {
+                floatingBottomActions
+            }
             .navigationTitle("Комнаты")
             .navigationDestination(isPresented: $vm.goNext) {
                 MainEstimateView(rooms: vm.rooms)
@@ -104,6 +78,62 @@ struct RoomsInputView: View {
                 Button("Готово") { hideKeyboard() }
             }
         }
+    }
+
+    private var floatingBottomActions: some View {
+        VStack(spacing: 10) {
+            if vm.canOpenSavedEstimates {
+                Button {
+                    vm.openSavedEstimates()
+                } label: {
+                    Text("Сметы")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .fill(Color.blue)
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+
+            HStack(spacing: 12) {
+                Button {
+                    vm.skip()
+                } label: {
+                    Text("Пропустить")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .fill(Color.blue)
+                        )
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    if vm.isContinueButtonEnabled {
+                        vm.continueToEstimate()
+                    }
+                } label: {
+                    Text("Продолжить")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 45)
+                        .background(
+                            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                .fill(vm.isContinueButtonEnabled ? Color.blue : Color(.systemGray5))
+                        )
+                }
+                .buttonStyle(.plain)
+                .allowsHitTesting(vm.isContinueButtonEnabled)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 
