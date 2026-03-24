@@ -70,13 +70,19 @@ struct QuantitySheet: View {
                         .padding(.vertical, 20)
                 } else {
                     ForEach($localRooms) { $room in
-                        HStack {
-                            Toggle(room.name, isOn: $room.isSelected)
-                                .disabled(!isAreaUnit)
-                            Spacer()
+                        HStack(spacing: 12) {
+                            Text(room.name)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
                             Text("\(room.area, specifier: "%.1f") м²")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                                .frame(width: 72, alignment: .trailing)
+
+                            Toggle("", isOn: $room.isSelected)
+                                .labelsHidden()
+                                .disabled(!isAreaUnit)
+                                .frame(width: 52, alignment: .trailing)
                         }
                         .opacity(isAreaUnit ? 1 : 0.4)
                     }

@@ -4,6 +4,7 @@ struct MainEstimateView: View {
     @StateObject private var vm: MainEstimateViewModel
     @State private var expandedSectionIDs: Set<String> = []
     @State private var showFinal = false
+    @State private var quantitySheetDetent: PresentationDetent = .fraction(0.5)
 
     init(rooms: [RoomInput]) {
         _vm = StateObject(wrappedValue: MainEstimateViewModel(rooms: rooms))
@@ -182,7 +183,7 @@ struct MainEstimateView: View {
                 QuantitySheet(item: item, rooms: vm.roomOptions) { qty in
                     vm.addItem(item, quantity: qty)
                 }
-                .presentationDetents([.fraction(0.5), .large])  // пол-экрана + полный
+                .presentationDetents([.fraction(0.5), .large], selection: $quantitySheetDetent)
                 .presentationDragIndicator(.visible)
             } else {
                 Text("Нет данных")
@@ -196,6 +197,13 @@ struct MainEstimateView: View {
                 onReset: { vm.resetAll() }
             )
             .presentationDetents([.medium, .large])
+        }
+        .onChange(of: vm.isQuantitySheetPresented) { _, isPresented in
+            guard isPresented else {
+                quantitySheetDetent = .fraction(0.5)
+                return
+            }
+            quantitySheetDetent = vm.roomOptions.count > 4 ? .large : .fraction(0.5)
         }
     }
 }
