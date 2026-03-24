@@ -8,8 +8,20 @@
 import SwiftUI
 
 struct RootView: View {
+    @State private var showSavedEstimates = EstimateStorage.hasSavedEstimates()
+
     var body: some View {
-//        MainEstimateView()
-        RoomsInputView()
+        if showSavedEstimates {
+            SavedEstimatesView(
+                onNewCalculation: {
+                    showSavedEstimates = false
+                },
+                onBecomeEmpty: {
+                    showSavedEstimates = false
+                }
+            )
+        } else {
+            RoomsInputView()
+        }
     }
 }

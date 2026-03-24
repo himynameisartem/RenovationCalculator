@@ -175,7 +175,7 @@ struct MainEstimateView: View {
                 lines: vm.summaryLines(),
                 total: vm.totalSum(),
                 onReset: { vm.resetAll() },
-                onSave: { _ = vm.saveEstimate() }
+                onSave: { vm.saveEstimate() }
             )
         }
         .sheet(isPresented: $vm.isQuantitySheetPresented) {

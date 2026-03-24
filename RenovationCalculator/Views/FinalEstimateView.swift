@@ -4,9 +4,11 @@ struct FinalEstimateView: View {
     let lines: [MainEstimateViewModel.SummaryLine]
     let total: Double
     let onReset: () -> Void
-    let onSave: () -> Void
+    let onSave: () -> String
 
     @State private var showResetAlert = false
+    @State private var showSaveAlert = false
+    @State private var saveMessage = ""
 
     var body: some View {
         VStack(spacing: 12) {
@@ -41,7 +43,8 @@ struct FinalEstimateView: View {
 
             VStack(spacing: 10) {
                 Button("Сохранить") {
-                    onSave()
+                    saveMessage = onSave()
+                    showSaveAlert = true
                 }
                 .buttonStyle(.borderedProminent)
 
@@ -59,6 +62,11 @@ struct FinalEstimateView: View {
             Button("Отмена", role: .cancel) { }
         } message: {
             Text("Если смета не сохранена, все расчеты будут удалены.")
+        }
+        .alert("Сохранение", isPresented: $showSaveAlert) {
+            Button("Ок", role: .cancel) { }
+        } message: {
+            Text(saveMessage)
         }
     }
 }

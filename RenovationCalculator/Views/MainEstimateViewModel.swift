@@ -100,28 +100,24 @@ final class MainEstimateViewModel: ObservableObject {
         return nil
     }
 
-    func saveEstimate() -> String? {
-        let lines = summaryLines()
-        let payload = EstimateExport(
-            createdAt: ISO8601DateFormatter().string(from: Date()),
-            total: totalSum(),
-            lines: lines.map {
-                EstimateExport.Line(
-                    title: $0.title,
-                    quantity: $0.quantity,
-                    unit: $0.unit,
-                    unitPrice: $0.unitPrice,
-                    subtotal: $0.subtotal
-                )
-            }
-        )
+    func saveEstimate() -> String {
+        let lines = summaryLines().map {
+            SavedEstimateLine(
+                title: $0.title,
+                quantity: $0.quantity,
+                unit: $0.unit,
+                unitPrice: $0.unitPrice,
+                subtotal: $0.subtotal
+            )
+        }
         do {
-            let data = try JSONEncoder().encode(payload)
-            let fileName = "estimate-\(Int(Date().timeIntervalSince1970)).json"
-            let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                .appendingPathComponent(fileName)
-            try data.write(to: url)
-            return "Смета сохранена: \(fileName)"
+            let estimate = try EstimateStorage.save(total: totalSum(), lines: lines)
+
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "ru_RU")
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .short
+            return "Смета сохранена от \(formatter.string(from: estimate.createdAt))"
         } catch {
             return "Ошибка сохранения"
         }
@@ -151,19 +147,5 @@ final class MainEstimateViewModel: ObservableObject {
                     unitPrice: item.price
                 )
             }
-    }
-}
-
-struct EstimateExport: Codable {
-    let createdAt: String
-    let total: Double
-    let lines: [Line]
-
-    struct Line: Codable {
-        let title: String
-        let quantity: Double
-        let unit: String
-        let unitPrice: Double
-        let subtotal: Double
     }
 }
