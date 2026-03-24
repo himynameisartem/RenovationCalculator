@@ -4,6 +4,7 @@ struct MainEstimateView: View {
     private let categoryOverlayHeight: CGFloat = 50
 
     @StateObject private var vm: MainEstimateViewModel
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var store: SavedEstimatesStore
     @EnvironmentObject private var router: AppRouter
     @State private var expandedSectionIDs: Set<String> = []
@@ -240,17 +241,34 @@ struct MainEstimateView: View {
         .padding(.horizontal, 16)
         .padding(.bottom, 12)
     }
+
+    private var categoryGlassFill: Color {
+        colorScheme == .dark ? Color.white.opacity(0.10) : Color.white.opacity(0.55)
+    }
+
+    private var categoryGlassStroke: Color {
+        colorScheme == .dark ? Color.white.opacity(0.14) : Color.white.opacity(0.55)
+    }
+
+    private var categoryCapsuleFill: Color {
+        colorScheme == .dark ? Color.white.opacity(0.12) : Color.white.opacity(0.35)
+    }
+
+    private var categoryTextColor: Color {
+        colorScheme == .dark ? Color.white.opacity(0.92) : .primary
+    }
+
     private func categoryGlassBar(proxy: ScrollViewProxy) -> some View {
         ZStack(alignment: .top) {
             RoundedRectangle(cornerRadius: 30, style: .continuous)
-                .fill(Color.white.opacity(0.55))
+                .fill(categoryGlassFill)
                 .background(
                     RoundedRectangle(cornerRadius: 30, style: .continuous)
                         .fill(.ultraThinMaterial)
                 )
                 .overlay {
                     RoundedRectangle(cornerRadius: 30, style: .continuous)
-                        .stroke(Color.white.opacity(0.55), lineWidth: 1)
+                        .stroke(categoryGlassStroke, lineWidth: 1)
                 }
                 .frame(height: 86)
                 .mask(
@@ -295,10 +313,10 @@ struct MainEstimateView: View {
                                 )
                                 : AnyView(
                                     Capsule()
-                                        .fill(Color.white.opacity(0.35))
+                                        .fill(categoryCapsuleFill)
                                 )
                         )
-                        .foregroundColor(selected ? .white : .primary)
+                        .foregroundColor(selected ? .white : categoryTextColor)
                     }
                 }
                 .padding(.horizontal, 14)

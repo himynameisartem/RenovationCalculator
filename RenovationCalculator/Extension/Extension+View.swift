@@ -17,9 +17,13 @@ extension View {
     func appScreenBackground() -> some View {
         background(
             Color(
-                red: 242.0 / 255.0,
-                green: 242.0 / 255.0,
-                blue: 247.0 / 255.0
+                uiColor: UIColor { trait in
+                    if trait.userInterfaceStyle == .dark {
+                        return UIColor(red: 28/255, green: 28/255, blue: 30/255, alpha: 1)
+                    } else {
+                        return UIColor(red: 242/255, green: 242/255, blue: 247/255, alpha: 1)
+                    }
+                }
             )
             .ignoresSafeArea()
         )
