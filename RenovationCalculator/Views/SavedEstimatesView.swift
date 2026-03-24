@@ -13,10 +13,20 @@ struct SavedEstimatesView: View {
                     VStack(spacing: 12) {
                         Text("Сохраненных смет пока нет")
                             .foregroundColor(.secondary)
-                        Button("Сделать новый расчет") {
+                        Button {
                             viewModel.showNewEstimate()
+                        } label: {
+                            Text("Сделать новый расчет")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity, minHeight: 50)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                        .fill(Color.blue)
+                                )
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 16)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
@@ -64,11 +74,21 @@ struct SavedEstimatesView: View {
                     .listStyle(.insetGrouped)
                     .transparentListContent()
 
-                    Button("Сделать новый расчет") {
+                    Button {
                         viewModel.showNewEstimate()
+                    } label: {
+                        Text("Сделать новый расчет")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity, minHeight: 45)
+                            .background(
+                                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                                    .fill(Color.blue)
+                            )
                     }
-                    .buttonStyle(.borderedProminent)
-                    .padding()
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
                 }
             }
             .appScreenBackground()
@@ -120,10 +140,17 @@ private struct SavedEstimateDetailView: View {
                 )
             } label: {
                 Text("Изменить")
-                    .frame(maxWidth: .infinity)
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, minHeight: 45)
+                    .background(
+                        RoundedRectangle(cornerRadius: 22, style: .continuous)
+                            .fill(Color.blue)
+                    )
             }
-            .buttonStyle(.borderedProminent)
-            .padding()
+            .buttonStyle(.plain)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
         }
         .appScreenBackground()
         .navigationTitle("Смета")

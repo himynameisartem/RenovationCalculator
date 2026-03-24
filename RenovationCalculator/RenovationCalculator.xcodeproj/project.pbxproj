@@ -83,7 +83,6 @@
 			children = (
 				3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */,
 				3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */,
-				310172A62F72672500C54158 /* SavedEstimatesView.swift */,
 				31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */,
 				31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */,
 			);
@@ -154,6 +153,7 @@
 				3155C1AC2F642800005C06F1 /* SummarySheetView.swift */,
 				3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */,
 				3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */,
+				310172A62F72672500C54158 /* SavedEstimatesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";

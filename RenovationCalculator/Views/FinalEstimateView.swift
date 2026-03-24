@@ -52,10 +52,6 @@ struct FinalEstimateView: View {
                     }
                 }
                 .transparentListContent()
-//                .safeAreaInset(edge: .bottom) {
-//                    Color.clear
-//                        .frame(height: 130)
-//                }
             }
 
             Text("Итого: \(total, specifier: "%.0f") ₽")
