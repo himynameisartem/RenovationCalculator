@@ -11,7 +11,10 @@ struct RootView: View {
     @StateObject private var store: SavedEstimatesStore
     @StateObject private var router: AppRouter
     @StateObject private var savedEstimatesViewModel: SavedEstimatesViewModel
-    @State private var initialized = false
+    @State private var isShowingLaunchScreen = true
+    @State private var showLaunchProgress = false
+    @State private var isAppReady = false
+    @State private var didFinishLaunchIntro = false
 
     init() {
         let store = SavedEstimatesStore()
@@ -26,25 +29,48 @@ struct RootView: View {
 
     var body: some View {
         Group {
-            switch router.rootScreen {
-            case .savedEstimates:
-                SavedEstimatesView(viewModel: savedEstimatesViewModel)
-            case .rooms:
-                RoomsInputView(
-                    viewModel: RoomsInputViewModel(
-                        store: store,
-                        router: router
+            if isShowingLaunchScreen {
+                LaunchLoadingView(showProgress: showLaunchProgress)
+            } else {
+                switch router.rootScreen {
+                case .savedEstimates:
+                    SavedEstimatesView(viewModel: savedEstimatesViewModel)
+                case .rooms:
+                    RoomsInputView(
+                        viewModel: RoomsInputViewModel(
+                            store: store,
+                            router: router
+                        )
                     )
-                )
+                }
             }
         }
         .id(router.rootViewID)
         .environmentObject(store)
         .environmentObject(router)
-        .onAppear {
-            guard !initialized else { return }
-            initialized = true
+        .task {
+            guard isShowingLaunchScreen else { return }
+
             router.show(store.hasSavedEstimates ? .savedEstimates : .rooms)
+            isAppReady = true
+
+            if didFinishLaunchIntro {
+                isShowingLaunchScreen = false
+            }
+        }
+        .task {
+            guard isShowingLaunchScreen else { return }
+
+            try? await Task.sleep(for: .seconds(3))
+            didFinishLaunchIntro = true
+
+            if isAppReady {
+                isShowingLaunchScreen = false
+            } else {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    showLaunchProgress = true
+                }
+            }
         }
     }
 }
