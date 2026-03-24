@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct SummarySheet: View {
-    let lines: [MainEstimateViewModel.SummaryLine]
+    let lines: [EstimateSummaryLine]
     let total: Double
     let onRemove: (String) -> Void
     let onReset: () -> Void

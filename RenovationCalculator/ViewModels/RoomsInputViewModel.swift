@@ -1,13 +1,35 @@
 import Foundation
 import Combine
 
+@MainActor
 final class RoomsInputViewModel: ObservableObject {
     @Published var rooms: [RoomInput] = []
+    @Published var goNext = false
+    @Published private(set) var canOpenSavedEstimates = false
 
     @Published var livingCount: Int = 0 { didSet { syncRooms(for: .living, count: livingCount) } }
     @Published var kitchenCount: Int = 0 { didSet { syncRooms(for: .kitchen, count: kitchenCount) } }
     @Published var bathroomCount: Int = 0 { didSet { syncRooms(for: .bathroom, count: bathroomCount) } }
     @Published var hallwayCount: Int = 0 { didSet { syncRooms(for: .hallway, count: hallwayCount) } }
+
+    private let store: SavedEstimatesStore
+    private let router: AppRouter
+    private var cancellables = Set<AnyCancellable>()
+
+    init(store: SavedEstimatesStore, router: AppRouter) {
+        self.store = store
+        self.router = router
+        self.canOpenSavedEstimates = store.hasSavedEstimates
+
+        bindStore()
+    }
+
+    var isContinueButtonEnabled: Bool {
+        livingCount > 0 ||
+        kitchenCount > 0 ||
+        bathroomCount > 0 ||
+        hallwayCount > 0
+    }
 
     func roomsIndices(for type: RoomType) -> [Int] {
         rooms.indices.filter { rooms[$0].type == type }
@@ -19,6 +41,18 @@ final class RoomsInputViewModel: ObservableObject {
 
     func totalArea() -> Double {
         rooms.reduce(0) { $0 + $1.area }
+    }
+
+    func openSavedEstimates() {
+        router.show(.savedEstimates, resetViewTree: true)
+    }
+
+    func skip() {
+        goNext = true
+    }
+
+    func continueToEstimate() {
+        goNext = true
     }
 
     private func syncRooms(for type: RoomType, count: Int) {
@@ -51,39 +85,13 @@ final class RoomsInputViewModel: ObservableObject {
             index += 1
         }
     }
-}
 
-struct RoomInput: Identifiable, Equatable, Codable {
-    let id: UUID
-    let type: RoomType
-    var index: Int
-    var name: String
-    var area: Double = 0
-    var height: Double = 2.7
-    var windows: Int = 0
-
-    init(type: RoomType, index: Int) {
-        self.id = UUID()
-        self.type = type
-        self.index = index
-        self.name = index > 1 ? "\(type.title) \(index)" : type.title
-    }
-}
-
-enum RoomType: String, CaseIterable, Identifiable, Codable {
-    case living
-    case kitchen
-    case bathroom
-    case hallway
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .living: return "Жилая"
-        case .kitchen: return "Кухня"
-        case .bathroom: return "Санузел"
-        case .hallway: return "Прихожая"
-        }
+    private func bindStore() {
+        store.$estimates
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] estimates in
+                self?.canOpenSavedEstimates = !estimates.isEmpty
+            }
+            .store(in: &cancellables)
     }
 }

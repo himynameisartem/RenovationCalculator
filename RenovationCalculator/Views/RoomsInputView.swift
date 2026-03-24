@@ -1,16 +1,10 @@
 import SwiftUI
 
 struct RoomsInputView: View {
-    @StateObject private var vm = RoomsInputViewModel()
-    @EnvironmentObject private var store: SavedEstimatesStore
-    @EnvironmentObject private var router: AppRouter
-    @State private var goNext = false
+    @StateObject private var vm: RoomsInputViewModel
 
-    var isContinueButtonEnabled: Bool {
-        vm.livingCount > 0 ||
-        vm.kitchenCount > 0 ||
-        vm.bathroomCount > 0 ||
-        vm.hallwayCount > 0
+    init(viewModel: RoomsInputViewModel) {
+        _vm = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -64,14 +58,14 @@ struct RoomsInputView: View {
 
                 HStack {
                     Button("Сметы") {
-                        router.show(.savedEstimates, resetViewTree: true)
+                        vm.openSavedEstimates()
                     }
                     .buttonStyle(.bordered)
                     .controlSize(.large)
-                    .disabled(!store.hasSavedEstimates)
+                    .disabled(!vm.canOpenSavedEstimates)
 
                     Button("Пропустить") {
-                        goNext = true
+                        vm.skip()
                     }
                     .foregroundColor(.black.opacity(0.7))
                     .buttonStyle(.bordered)
@@ -82,21 +76,21 @@ struct RoomsInputView: View {
                     Spacer()
 
                     Button("Продолжить") {
-                        goNext = true
+                        vm.continueToEstimate()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                     .padding(.horizontal, 20)
                     .tint(.blue)
-                    .disabled(!isContinueButtonEnabled)
-                    .opacity(isContinueButtonEnabled ? 1 : 0.7)
+                    .disabled(!vm.isContinueButtonEnabled)
+                    .opacity(vm.isContinueButtonEnabled ? 1 : 0.7)
                 }
                 .padding()
                 .background(Color.gray.opacity(0.1))
                 .ignoresSafeArea(.keyboard, edges: .bottom)
             }
             .navigationTitle("Комнаты")
-            .navigationDestination(isPresented: $goNext) {
+            .navigationDestination(isPresented: $vm.goNext) {
                 MainEstimateView(rooms: vm.rooms)
             }
         }
@@ -192,5 +186,10 @@ private struct RoomParamsView: View {
 }
 
 #Preview {
-    RoomsInputView()
+    RoomsInputView(
+        viewModel: RoomsInputViewModel(
+            store: SavedEstimatesStore(),
+            router: AppRouter()
+        )
+    )
 }

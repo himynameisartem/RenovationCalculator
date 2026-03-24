@@ -1,34 +1,33 @@
 import SwiftUI
 
 struct SavedEstimatesView: View {
-    @EnvironmentObject private var store: SavedEstimatesStore
-    @EnvironmentObject private var router: AppRouter
+    @ObservedObject var viewModel: SavedEstimatesViewModel
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                if store.isLoading && store.estimates.isEmpty {
+                if viewModel.isLoading && !viewModel.hasEstimates {
                     ProgressView("Загрузка смет...")
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if store.estimates.isEmpty {
+                } else if !viewModel.hasEstimates {
                     VStack(spacing: 12) {
                         Text("Сохраненных смет пока нет")
                             .foregroundColor(.secondary)
                         Button("Сделать новый расчет") {
-                            router.show(.rooms, resetViewTree: true)
+                            viewModel.showNewEstimate()
                         }
                         .buttonStyle(.borderedProminent)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     List {
-                        ForEach(store.estimates) { estimate in
+                        ForEach(viewModel.estimates) { estimate in
                             NavigationLink {
                                 SavedEstimateDetailView(estimate: estimate)
                             } label: {
                                 VStack(alignment: .leading, spacing: 8) {
                                     HStack {
-                                        Text(formattedDate(estimate.createdAt))
+                                        Text(viewModel.formattedDate(estimate.createdAt))
                                             .font(.headline)
                                         Spacer()
                                         Text("\(estimate.total, specifier: "%.0f") ₽")
@@ -54,10 +53,7 @@ struct SavedEstimatesView: View {
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
-                                    store.delete(id: estimate.id)
-                                    if !store.hasSavedEstimates {
-                                        router.rootScreen = .rooms
-                                    }
+                                    viewModel.deleteEstimate(estimate)
                                 } label: {
                                     Label("Удалить", systemImage: "trash")
                                 }
@@ -67,7 +63,7 @@ struct SavedEstimatesView: View {
                     .listStyle(.insetGrouped)
 
                     Button("Сделать новый расчет") {
-                        router.show(.rooms, resetViewTree: true)
+                        viewModel.showNewEstimate()
                     }
                     .buttonStyle(.borderedProminent)
                     .padding()
@@ -75,17 +71,9 @@ struct SavedEstimatesView: View {
             }
             .navigationTitle("Сохраненные сметы")
             .onAppear {
-                store.reload()
+                viewModel.onAppear()
             }
         }
-    }
-
-    private func formattedDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "ru_RU")
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
     }
 }
 

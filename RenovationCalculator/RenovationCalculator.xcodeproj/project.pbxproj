@@ -11,14 +11,17 @@
 		310172A72F72672500C54158 /* SavedEstimatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172A62F72672500C54158 /* SavedEstimatesView.swift */; };
 		310172A92F726A9300C54158 /* SavedEstimatesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172A82F726A9300C54158 /* SavedEstimatesStore.swift */; };
 		310172AB2F726AA100C54158 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172AA2F726AA100C54158 /* AppRouter.swift */; };
+		310172AE2F727DA600C54158 /* EstimateSaveService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172AD2F727DA600C54158 /* EstimateSaveService.swift */; };
+		310172AF2F727DA600C54158 /* CatalogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172AC2F727DA600C54158 /* CatalogService.swift */; };
+		310172B12F727DCB00C54158 /* EstimateSummaryLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172B02F727DCB00C54158 /* EstimateSummaryLine.swift */; };
+		310172B42F72829800C54158 /* RoomInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172B32F72829800C54158 /* RoomInput.swift */; };
+		310172B62F7282C600C54158 /* RoomType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 310172B52F7282C600C54158 /* RoomType.swift */; };
 		3105BE572F47211F00268CC4 /* RenovationCalculatorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE562F47211F00268CC4 /* RenovationCalculatorApp.swift */; };
 		3105BE592F47211F00268CC4 /* MainEstimateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE582F47211F00268CC4 /* MainEstimateView.swift */; };
 		3105BE5B2F47212000268CC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3105BE5A2F47212000268CC4 /* Assets.xcassets */; };
 		3105BE642F47236900268CC4 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE632F47236900268CC4 /* Category.swift */; };
 		3105BE662F4723BB00268CC4 /* WorkSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE652F4723BA00268CC4 /* WorkSection.swift */; };
 		3105BE682F4723C600268CC4 /* WorkItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE672F4723C600268CC4 /* WorkItem.swift */; };
-		3105BE6A2F4723DA00268CC4 /* EstimateLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE692F4723DA00268CC4 /* EstimateLine.swift */; };
-		3105BE702F4724B900268CC4 /* EstimateCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE6F2F4724B900268CC4 /* EstimateCalculator.swift */; };
 		3105BE762F4725FA00268CC4 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE752F4725FA00268CC4 /* RootView.swift */; };
 		3105BE782F472A0C00268CC4 /* Catalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE772F472A0C00268CC4 /* Catalog.swift */; };
 		3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */; };
@@ -29,6 +32,8 @@
 		3155C1A92F640F91005C06F1 /* QuantitySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */; };
 		3155C1AD2F642800005C06F1 /* SummarySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1AC2F642800005C06F1 /* SummarySheetView.swift */; };
 		3155C1AF2F642AC0005C06F1 /* FinalEstimateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1AE2F642AC0005C06F1 /* FinalEstimateView.swift */; };
+		31A0F3D62F753D8E00B1A112 /* SavedEstimatesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */; };
+		31A0F3D82F753F7C00B1A112 /* FinalEstimateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +41,11 @@
 		310172A62F72672500C54158 /* SavedEstimatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedEstimatesView.swift; sourceTree = "<group>"; };
 		310172A82F726A9300C54158 /* SavedEstimatesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedEstimatesStore.swift; sourceTree = "<group>"; };
 		310172AA2F726AA100C54158 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		310172AC2F727DA600C54158 /* CatalogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogService.swift; sourceTree = "<group>"; };
+		310172AD2F727DA600C54158 /* EstimateSaveService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateSaveService.swift; sourceTree = "<group>"; };
+		310172B02F727DCB00C54158 /* EstimateSummaryLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateSummaryLine.swift; sourceTree = "<group>"; };
+		310172B32F72829800C54158 /* RoomInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomInput.swift; sourceTree = "<group>"; };
+		310172B52F7282C600C54158 /* RoomType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomType.swift; sourceTree = "<group>"; };
 		3105BE532F47211E00268CC4 /* RenovationCalculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RenovationCalculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3105BE562F47211F00268CC4 /* RenovationCalculatorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenovationCalculatorApp.swift; sourceTree = "<group>"; };
 		3105BE582F47211F00268CC4 /* MainEstimateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEstimateView.swift; sourceTree = "<group>"; };
@@ -43,8 +53,6 @@
 		3105BE632F47236900268CC4 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		3105BE652F4723BA00268CC4 /* WorkSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkSection.swift; sourceTree = "<group>"; };
 		3105BE672F4723C600268CC4 /* WorkItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkItem.swift; sourceTree = "<group>"; };
-		3105BE692F4723DA00268CC4 /* EstimateLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateLine.swift; sourceTree = "<group>"; };
-		3105BE6F2F4724B900268CC4 /* EstimateCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EstimateCalculator.swift; sourceTree = "<group>"; };
 		3105BE752F4725FA00268CC4 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3105BE772F472A0C00268CC4 /* Catalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Catalog.swift; sourceTree = "<group>"; };
 		3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogLoader.swift; sourceTree = "<group>"; };
@@ -55,6 +63,8 @@
 		3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantitySheetView.swift; sourceTree = "<group>"; };
 		3155C1AC2F642800005C06F1 /* SummarySheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummarySheetView.swift; sourceTree = "<group>"; };
 		3155C1AE2F642AC0005C06F1 /* FinalEstimateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalEstimateView.swift; sourceTree = "<group>"; };
+		31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedEstimatesViewModel.swift; sourceTree = "<group>"; };
+		31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalEstimateViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,14 +78,27 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		310172B22F72821700C54158 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */,
+				3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */,
+				310172A62F72672500C54158 /* SavedEstimatesView.swift */,
+				31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */,
+				31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		3105BE4A2F47211E00268CC4 = {
 			isa = PBXGroup;
 			children = (
 				3105BE742F4725EC00268CC4 /* App */,
-				3105BE622F47232F00268CC4 /* Models */,
 				3105BE6E2F47249B00268CC4 /* Services */,
 				3155C1A52F63FC2F005C06F1 /* Extension */,
+				3105BE622F47232F00268CC4 /* Models */,
 				3105BE712F4724CF00268CC4 /* Views */,
+				310172B22F72821700C54158 /* ViewModels */,
 				3105BE7B2F472EE100268CC4 /* DataManager */,
 				3105BE612F4722DC00268CC4 /* Resources */,
 				3105BE542F47211E00268CC4 /* Products */,
@@ -102,10 +125,12 @@
 			isa = PBXGroup;
 			children = (
 				3105BE772F472A0C00268CC4 /* Catalog.swift */,
+				310172B02F727DCB00C54158 /* EstimateSummaryLine.swift */,
 				3105BE632F47236900268CC4 /* Category.swift */,
 				3105BE652F4723BA00268CC4 /* WorkSection.swift */,
 				3105BE672F4723C600268CC4 /* WorkItem.swift */,
-				3105BE692F4723DA00268CC4 /* EstimateLine.swift */,
+				310172B32F72829800C54158 /* RoomInput.swift */,
+				310172B52F7282C600C54158 /* RoomType.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -114,7 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				310172A42F72671200C54158 /* EstimateStorage.swift */,
-				3105BE6F2F4724B900268CC4 /* EstimateCalculator.swift */,
+				310172AC2F727DA600C54158 /* CatalogService.swift */,
+				310172AD2F727DA600C54158 /* EstimateSaveService.swift */,
 				310172A82F726A9300C54158 /* SavedEstimatesStore.swift */,
 			);
 			path = Services;
@@ -128,9 +154,6 @@
 				3155C1AC2F642800005C06F1 /* SummarySheetView.swift */,
 				3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */,
 				3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */,
-				3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */,
-				3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */,
-				310172A62F72672500C54158 /* SavedEstimatesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -248,12 +271,17 @@
 				3105BE642F47236900268CC4 /* Category.swift in Sources */,
 				3105BE782F472A0C00268CC4 /* Catalog.swift in Sources */,
 				3155C1AF2F642AC0005C06F1 /* FinalEstimateView.swift in Sources */,
-				3105BE702F4724B900268CC4 /* EstimateCalculator.swift in Sources */,
+				31A0F3D82F753F7C00B1A112 /* FinalEstimateViewModel.swift in Sources */,
 				3105BE682F4723C600268CC4 /* WorkItem.swift in Sources */,
+				310172AE2F727DA600C54158 /* EstimateSaveService.swift in Sources */,
+				310172B62F7282C600C54158 /* RoomType.swift in Sources */,
+				310172AF2F727DA600C54158 /* CatalogService.swift in Sources */,
 				3155C1A72F63FC54005C06F1 /* Extension+View.swift in Sources */,
+				310172B42F72829800C54158 /* RoomInput.swift in Sources */,
 				3105BE662F4723BB00268CC4 /* WorkSection.swift in Sources */,
 				3105BE572F47211F00268CC4 /* RenovationCalculatorApp.swift in Sources */,
-				3105BE6A2F4723DA00268CC4 /* EstimateLine.swift in Sources */,
+				310172B12F727DCB00C54158 /* EstimateSummaryLine.swift in Sources */,
+				31A0F3D62F753D8E00B1A112 /* SavedEstimatesViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

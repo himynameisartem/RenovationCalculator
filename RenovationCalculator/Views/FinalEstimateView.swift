@@ -1,18 +1,29 @@
 import SwiftUI
 
 struct FinalEstimateView: View {
-    @EnvironmentObject private var store: SavedEstimatesStore
-    @EnvironmentObject private var router: AppRouter
-
-    let lines: [MainEstimateViewModel.SummaryLine]
+    @StateObject private var viewModel: FinalEstimateViewModel
+    let lines: [EstimateSummaryLine]
     let total: Double
-    let onReset: () -> Void
-    let onSave: () -> String
 
-    @State private var showResetAlert = false
-    @State private var showSaveAlert = false
-    @State private var saveMessage = ""
-    @State private var isSaved = false
+    init(
+        lines: [EstimateSummaryLine],
+        total: Double,
+        store: SavedEstimatesStore,
+        router: AppRouter,
+        onReset: @escaping () -> Void,
+        onSave: @escaping () -> String
+    ) {
+        self.lines = lines
+        self.total = total
+        _viewModel = StateObject(
+            wrappedValue: FinalEstimateViewModel(
+                store: store,
+                router: router,
+                onReset: onReset,
+                onSave: onSave
+            )
+        )
+    }
 
     var body: some View {
         VStack(spacing: 12) {
@@ -47,44 +58,35 @@ struct FinalEstimateView: View {
 
             VStack(spacing: 10) {
                 Button("Сохранить") {
-                    saveMessage = onSave()
-                    store.reload()
-                    isSaved = !saveMessage.lowercased().contains("ошибка")
-                    showSaveAlert = true
+                    viewModel.saveEstimate()
                 }
                 .buttonStyle(.borderedProminent)
 
                 Button("Сметы") {
-                    store.reload()
-                    router.show(.savedEstimates, resetViewTree: true)
+                    viewModel.openSavedEstimates()
                 }
                 .buttonStyle(.bordered)
-                .disabled(store.estimates.isEmpty && !isSaved)
+                .disabled(!viewModel.canOpenSavedEstimates)
 
                 Button("Рассчитать заново") {
-                    if isSaved {
-                        router.show(.rooms, resetViewTree: true)
-                    } else {
-                        showResetAlert = true
-                    }
+                    viewModel.startNewCalculation()
                 }
                 .buttonStyle(.bordered)
             }
             .padding(.bottom, 12)
         }
-        .alert("Уверены?", isPresented: $showResetAlert) {
+        .alert("Уверены?", isPresented: $viewModel.showResetAlert) {
             Button("Да, сбросить", role: .destructive) {
-                onReset()
-                router.show(.rooms, resetViewTree: true)
+                viewModel.confirmResetAndStartNewCalculation()
             }
             Button("Отмена", role: .cancel) { }
         } message: {
             Text("Если смета не сохранена, все расчеты будут удалены.")
         }
-        .alert("Сохранение", isPresented: $showSaveAlert) {
+        .alert("Сохранение", isPresented: $viewModel.showSaveAlert) {
             Button("Ок", role: .cancel) { }
         } message: {
-            Text(saveMessage)
+            Text(viewModel.saveMessage)
         }
     }
 }

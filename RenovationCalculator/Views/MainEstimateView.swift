@@ -2,6 +2,8 @@ import SwiftUI
 
 struct MainEstimateView: View {
     @StateObject private var vm: MainEstimateViewModel
+    @EnvironmentObject private var store: SavedEstimatesStore
+    @EnvironmentObject private var router: AppRouter
     @State private var expandedSectionIDs: Set<String> = []
     @State private var showFinal = false
     @State private var quantitySheetDetent: PresentationDetent = .fraction(0.5)
@@ -180,6 +182,8 @@ struct MainEstimateView: View {
             FinalEstimateView(
                 lines: vm.summaryLines(),
                 total: vm.totalSum(),
+                store: store,
+                router: router,
                 onReset: { vm.resetAll() },
                 onSave: { vm.saveEstimate() }
             )

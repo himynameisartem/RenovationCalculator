@@ -8,17 +8,34 @@
 import SwiftUI
 
 struct RootView: View {
-    @StateObject private var store = SavedEstimatesStore()
-    @StateObject private var router = AppRouter()
+    @StateObject private var store: SavedEstimatesStore
+    @StateObject private var router: AppRouter
+    @StateObject private var savedEstimatesViewModel: SavedEstimatesViewModel
     @State private var initialized = false
+
+    init() {
+        let store = SavedEstimatesStore()
+        let router = AppRouter()
+
+        _store = StateObject(wrappedValue: store)
+        _router = StateObject(wrappedValue: router)
+        _savedEstimatesViewModel = StateObject(
+            wrappedValue: SavedEstimatesViewModel(store: store, router: router)
+        )
+    }
 
     var body: some View {
         Group {
             switch router.rootScreen {
             case .savedEstimates:
-                SavedEstimatesView()
+                SavedEstimatesView(viewModel: savedEstimatesViewModel)
             case .rooms:
-                RoomsInputView()
+                RoomsInputView(
+                    viewModel: RoomsInputViewModel(
+                        store: store,
+                        router: router
+                    )
+                )
             }
         }
         .id(router.rootViewID)

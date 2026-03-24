@@ -18,14 +18,23 @@ final class MainEstimateViewModel: ObservableObject {
         rooms.map { RoomOption(id: $0.id, name: $0.name, area: $0.area, isSelected: false) }
     }
 
-    private let loader = CatalogLoader()
+    private let catalogService: CatalogServiceProtocol
+    private let estimateSaveService: EstimateSaveServiceProtocol
     private let rooms: [RoomInput]
     private let editingEstimateID: UUID?
 
-    init(rooms: [RoomInput], initialSelectedItems: [String: Double] = [:], editingEstimateID: UUID? = nil) {
+    init(
+        rooms: [RoomInput],
+        initialSelectedItems: [String: Double] = [:],
+        editingEstimateID: UUID? = nil,
+        catalogService: CatalogServiceProtocol? = nil,
+        estimateSaveService: EstimateSaveServiceProtocol? = nil
+    ) {
         self.rooms = rooms
         self._selectedItems = Published(initialValue: initialSelectedItems)
         self.editingEstimateID = editingEstimateID
+        self.catalogService = catalogService ?? CatalogService()
+        self.estimateSaveService = estimateSaveService ?? EstimateSaveService()
     }
 
 
@@ -41,7 +50,7 @@ final class MainEstimateViewModel: ObservableObject {
             defer { isLoading = false }
 
             do {
-                let catalog = try await loader.loadRemoteCatalog()
+                let catalog = try await catalogService.loadCatalog()
                 categories = catalog.categories
                 if selectedCategoryIndex >= categories.count {
                     selectedCategoryIndex = 0
@@ -111,17 +120,9 @@ final class MainEstimateViewModel: ObservableObject {
     }
 
     func saveEstimate() -> String {
-        let lines = summaryLines().map {
-            SavedEstimateLine(
-                title: $0.title,
-                quantity: $0.quantity,
-                unit: $0.unit,
-                unitPrice: $0.unitPrice,
-                subtotal: $0.subtotal
-            )
-        }
+        let lines = summaryLines()
         do {
-            let estimate = try EstimateStorage.save(
+            let estimate = try estimateSaveService.saveEstimate(
                 id: editingEstimateID,
                 total: totalSum(),
                 rooms: rooms,
@@ -139,23 +140,13 @@ final class MainEstimateViewModel: ObservableObject {
         }
     }
 
-    struct SummaryLine: Identifiable {
-        let id = UUID()
-        let itemId: String
-        let title: String
-        let quantity: Double
-        let unit: String
-        let unitPrice: Double
-        var subtotal: Double { quantity * unitPrice }
-    }
-
-    func summaryLines() -> [SummaryLine] {
+    func summaryLines() -> [EstimateSummaryLine] {
         categories
             .flatMap { $0.sections }
             .flatMap { $0.items }
             .compactMap { item in
                 guard let q = selectedItems[item.id], q > 0 else { return nil }
-                return SummaryLine(
+                return EstimateSummaryLine(
                     itemId: item.id,
                     title: item.title,
                     quantity: q,
