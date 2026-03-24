@@ -41,14 +41,12 @@ struct QuantitySheet: View {
                     Image(systemName: "minus.circle.fill")
                         .font(.system(size: 28))
                 }
-                .disabled(isAreaUnit)
 
                 TextField("0", value: $quantity, format: .number)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.center)
                     .frame(width: 100)
                     .textFieldStyle(.roundedBorder)
-                    .disabled(isAreaUnit)
 
                 Button {
                     quantity += 1
@@ -56,7 +54,6 @@ struct QuantitySheet: View {
                     Image(systemName: "plus.circle.fill")
                         .font(.system(size: 28))
                 }
-                .disabled(isAreaUnit)
             }
 
             Text("Сумма: \(subtotal, specifier: "%.0f") ₽")

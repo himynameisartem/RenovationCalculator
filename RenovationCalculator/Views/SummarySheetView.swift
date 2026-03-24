@@ -47,6 +47,7 @@ struct SummarySheet: View {
             HStack {
                 Button("Сбросить все", role: .destructive) {
                     onReset()
+                    dismiss()
                 }
                 .buttonStyle(.bordered)
 
