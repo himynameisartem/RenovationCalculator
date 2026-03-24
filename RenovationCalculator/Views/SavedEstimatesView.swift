@@ -161,13 +161,12 @@ private struct SavedEstimateDetailView: View {
                             }
                         }
                     }
-                    .frame(maxHeight: 260)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .scrollIndicators(.visible)
                     .padding(.horizontal, 16)
                 }
             }
-
-            Spacer(minLength: 0)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
 
             Text("Итого: \(estimate.total, specifier: "%.0f") ₽")
                 .font(.title3)
@@ -201,6 +200,14 @@ private struct SavedEstimateDetailView: View {
                 isManualInfoHint = false
             }
         }
+        .overlay {
+            if isInfoHintVisible {
+                Color.black.opacity(0.08)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
+        }
         .overlay(alignment: .topTrailing) {
             if isInfoHintVisible {
                 infoHintBubble
@@ -222,8 +229,10 @@ private struct SavedEstimateDetailView: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "info.circle")
+                    Image(systemName: "info")
+                        .foregroundStyle(.primary)
                 }
+                .buttonStyle(.plain)
             }
         }
         .task {
@@ -299,7 +308,7 @@ private struct SavedEstimateDetailView: View {
                     .multilineTextAlignment(.leading)
             }
             .padding(12)
-            .frame(maxWidth: 280, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))

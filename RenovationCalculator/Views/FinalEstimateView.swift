@@ -3,7 +3,6 @@ import SwiftUI
 struct FinalEstimateView: View {
     @Environment(\.openURL) private var openURL
     @StateObject private var viewModel: FinalEstimateViewModel
-    @State private var isEstimateExpanded = true
     @State private var isInfoHintVisible = false
     @State private var isManualInfoHint = false
     @State private var didShowInitialInfoHint = false
@@ -48,30 +47,14 @@ struct FinalEstimateView: View {
                 }
                 .padding(.horizontal, 16)
 
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isEstimateExpanded.toggle()
-                    }
-                } label: {
-                    HStack {
-                        Text("Смета")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-
-                        Spacer()
-
-                        Image(systemName: isEstimateExpanded ? "chevron.up" : "chevron.down")
-                            .foregroundColor(.secondary)
-                    }
+                Text("Смета")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
 
-                if isEstimateExpanded {
-                    estimateContent
-                        .padding(.horizontal, 16)
-                }
+                estimateContent
+                    .padding(.horizontal, 16)
             }
 
             Spacer(minLength: 0)
@@ -88,6 +71,14 @@ struct FinalEstimateView: View {
             withAnimation(.easeInOut(duration: 0.2)) {
                 isInfoHintVisible = false
                 isManualInfoHint = false
+            }
+        }
+        .overlay {
+            if isInfoHintVisible {
+                Color.black.opacity(0.08)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
             }
         }
         .overlay(alignment: .topTrailing) {
@@ -114,8 +105,10 @@ struct FinalEstimateView: View {
                         }
                     }
                 } label: {
-                    Image(systemName: "info.circle")
+                    Image(systemName: "info")
+                        .foregroundStyle(.primary)
                 }
+                .buttonStyle(.plain)
             }
         }
         .task {
@@ -171,7 +164,7 @@ struct FinalEstimateView: View {
                     .multilineTextAlignment(.leading)
             }
             .padding(12)
-            .frame(maxWidth: 280, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
