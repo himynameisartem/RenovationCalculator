@@ -15,7 +15,7 @@ enum CatalogLoaderError: Error {
 
 
 final class CatalogLoader {
-    private let remoteCatalogURLString = "https://raw.githubusercontent.com/himynameisartem/my_test_json/refs/heads/main/db.json"
+    private let remoteCatalogURLString = "https://sk-family.ru/db.json"
     private let decoder = JSONDecoder()
 
     func loadFromBundle() throws -> Catalog {
