@@ -259,22 +259,22 @@ private struct SavedEstimateDetailView: View {
     private var placeholderCompanies: [CompanyPlaceholder] {
         [
             CompanyPlaceholder(
-                name: "Компания 1",
-                logoSystemName: "building.2.crop.circle",
-                websiteURL: URL(string: "https://example.com")!,
-                phoneURL: URL(string: "tel:+70000000001")!
+                name: "ГК Поколение",
+                logoName: "pokolenieLogo",
+                websiteURL: URL(string: "https://gkpokolenie.ru")!,
+                phoneURL: URL(string: "tel:+79581005418")!
             ),
             CompanyPlaceholder(
-                name: "Компания 2",
-                logoSystemName: "hammer.circle",
-                websiteURL: URL(string: "https://example.com")!,
-                phoneURL: URL(string: "tel:+70000000002")!
+                name: "Легион",
+                logoName: "legionLogo",
+                websiteURL: URL(string: "https://legionremont.ru")!,
+                phoneURL: URL(string: "tel:+79158303600")!
             ),
             CompanyPlaceholder(
-                name: "Компания 3",
-                logoSystemName: "wrench.and.screwdriver.fill",
-                websiteURL: URL(string: "https://example.com")!,
-                phoneURL: URL(string: "tel:+70000000003")!
+                name: "СК Фемели",
+                logoName: "femeliLogo",
+                websiteURL: URL(string: "https://skfamily.moscow")!,
+                phoneURL: URL(string: "tel:+79158303600")!
             )
         ]
     }
@@ -282,7 +282,7 @@ private struct SavedEstimateDetailView: View {
     private struct CompanyPlaceholder: Identifiable {
         let id = UUID()
         let name: String
-        let logoSystemName: String
+        let logoName: String
         let websiteURL: URL
         let phoneURL: URL
     }
@@ -328,8 +328,11 @@ private struct SavedEstimateDetailView: View {
                     .fill(Color.blue.opacity(0.12))
                     .frame(width: 42, height: 42)
 
-                Image(systemName: company.logoSystemName)
-                    .foregroundColor(.blue)
+                Image(company.logoName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 26, height: 26)
+                    .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
             }
 
             Text(company.name)

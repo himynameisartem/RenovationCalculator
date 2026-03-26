@@ -71,12 +71,6 @@ struct RoomsInputView: View {
                 .navigationDestination(isPresented: $vm.goNext) {
                     MainEstimateView(rooms: vm.rooms)
                 }
-                .toolbar {
-                    ToolbarItemGroup(placement: .keyboard) {
-                        Spacer()
-                        Button("Готово") { hideKeyboard() }
-                    }
-                }
             }
 
             if !vm.goNext {
