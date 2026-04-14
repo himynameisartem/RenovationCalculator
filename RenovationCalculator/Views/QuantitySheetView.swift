@@ -26,71 +26,76 @@ struct QuantitySheet: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text(item.title)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-
-            Text("\(item.price, specifier: "%.0f") ₽ / \(item.unit)")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
-            HStack(spacing: 12) {
-                Button {
-                    if quantity > 0 { quantity -= 1 }
-                } label: {
-                    Image(systemName: "minus.circle.fill")
-                        .font(.system(size: 28))
-                }
-
-                TextField("0", value: $quantity, format: .number)
-                    .keyboardType(.decimalPad)
+            VStack(spacing: 10) {
+                Text(item.title)
+                    .font(.headline)
                     .multilineTextAlignment(.center)
-                    .frame(width: 100)
-                    .textFieldStyle(.roundedBorder)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .center)
 
-                Button {
-                    quantity += 1
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .font(.system(size: 28))
-                }
-            }
-
-            Text("Сумма: \(subtotal, specifier: "%.0f") ₽")
-                .font(.headline)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Комнаты:")
+                Text("\(item.price, specifier: "%.0f") ₽ / \(item.unit)")
                     .font(.subheadline)
+                    .foregroundColor(.secondary)
 
-                if localRooms.isEmpty {
-                    Text("Комнаты не выбраны")
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 20)
-                } else {
-                    ForEach($localRooms) { $room in
-                        HStack(spacing: 12) {
-                            Text(room.name)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(spacing: 12) {
+                    Button {
+                        if quantity > 0 { quantity -= 1 }
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.system(size: 28))
+                    }
 
-                            Text("\(room.area, specifier: "%.1f") м²")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                                .frame(width: 72, alignment: .trailing)
+                    TextField("0", value: $quantity, format: .number)
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.center)
+                        .frame(width: 100)
+                        .textFieldStyle(.roundedBorder)
 
-                            Toggle("", isOn: $room.isSelected)
-                                .labelsHidden()
-                                .disabled(!isAreaUnit)
-                                .frame(width: 52, alignment: .trailing)
-                        }
-                        .opacity(isAreaUnit ? 1 : 0.4)
+                    Button {
+                        quantity += 1
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 28))
                     }
                 }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer()
+                Text("Сумма: \(subtotal, specifier: "%.0f") ₽")
+                    .font(.headline)
+            }
+            .frame(maxWidth: .infinity)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Комнаты:")
+                        .font(.subheadline)
+
+                    if localRooms.isEmpty {
+                        Text("Комнаты не выбраны")
+                            .foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.vertical, 20)
+                    } else {
+                        ForEach($localRooms) { $room in
+                            HStack(spacing: 12) {
+                                Text(room.name)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                                Text("\(room.area, specifier: "%.1f") м²")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 72, alignment: .trailing)
+
+                                Toggle("", isOn: $room.isSelected)
+                                    .labelsHidden()
+                                    .disabled(!isAreaUnit)
+                                    .frame(width: 52, alignment: .trailing)
+                            }
+                            .opacity(isAreaUnit ? 1 : 0.4)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
 
             HStack {
                 Button("Отмена") { dismiss() }

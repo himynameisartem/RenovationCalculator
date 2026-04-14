@@ -8,6 +8,7 @@ struct FinalEstimateView: View {
     @State private var didShowInitialInfoHint = false
     let lines: [EstimateSummaryLine]
     let total: Double
+    private let infoBubbleHorizontalInset: CGFloat = 16
 
     init(
         lines: [EstimateSummaryLine],
@@ -38,6 +39,12 @@ struct FinalEstimateView: View {
                 Text("Список компаний")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .padding(.horizontal, 16)
+
+                Text("Ниже приведены примеры компаний для ориентира. Вы можете выбрать любую другую компанию или подрядчика по своему усмотрению.")
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 16)
 
                 VStack(spacing: 8) {
@@ -75,7 +82,7 @@ struct FinalEstimateView: View {
         }
         .overlay {
             if isInfoHintVisible {
-                Color.black.opacity(0.08)
+                Color.black.opacity(0.14)
                     .ignoresSafeArea()
                     .allowsHitTesting(false)
                     .transition(.opacity)
@@ -147,34 +154,26 @@ struct FinalEstimateView: View {
         VStack(alignment: .trailing, spacing: 0) {
             RoundedRectangle(cornerRadius: 3, style: .continuous)
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .frame(width: 14, height: 14)
+                .frame(width: 16, height: 16)
                 .rotationEffect(.degrees(45))
-                .overlay {
-                    RoundedRectangle(cornerRadius: 3, style: .continuous)
-                        .stroke(Color.white.opacity(0.35), lineWidth: 1)
-                        .rotationEffect(.degrees(45))
-                }
-                .offset(x: -26, y: 7)
-                .zIndex(1)
+                .padding(.trailing, 28)
+                .padding(.bottom, -8)
 
             VStack(alignment: .leading, spacing: 10) {
-                Text("Цена может измениться. Для уточнения обратитесь в выбранную компанию.")
-                    .font(.subheadline)
+                Text("Указанные компании приведены в качестве примеров и не ограничивают ваш выбор подрядчика. Итоговая стоимость, сроки и условия работ уточняются напрямую у выбранной компании. Информация на экране носит ознакомительный характер и не является публичной офертой.")
+                    .font(.footnote)
                     .foregroundColor(.primary)
                     .multilineTextAlignment(.leading)
             }
-            .padding(12)
-            .fixedSize(horizontal: false, vertical: true)
+            .padding(10)
+            .frame(maxWidth: min(UIScreen.main.bounds.width - (infoBubbleHorizontalInset * 2), 320), alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
             )
-            .overlay {
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(Color.white.opacity(0.35), lineWidth: 1)
-            }
             .shadow(color: Color.black.opacity(0.08), radius: 12, y: 6)
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var placeholderCompanies: [CompanyPlaceholder] {
@@ -252,8 +251,12 @@ struct FinalEstimateView: View {
         HStack(spacing: 12) {
             ZStack {
                 Circle()
-                    .fill(Color.blue.opacity(0.12))
+                    .fill(Color.white)
                     .frame(width: 42, height: 42)
+                    .overlay(
+                        Circle()
+                            .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+                    )
 
                 Image(company.logoName)
                     .resizable()
