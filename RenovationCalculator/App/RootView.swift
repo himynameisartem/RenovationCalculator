@@ -26,51 +26,83 @@ struct RootView: View {
             wrappedValue: SavedEstimatesViewModel(store: store, router: router)
         )
     }
-
+    
     var body: some View {
-        Group {
-            if isShowingLaunchScreen {
-                LaunchLoadingView(showProgress: showLaunchProgress)
-            } else {
-                switch router.rootScreen {
-                case .savedEstimates:
-                    SavedEstimatesView(viewModel: savedEstimatesViewModel)
-                case .rooms:
-                    RoomsInputView(
-                        viewModel: RoomsInputViewModel(
-                            store: store,
-                            router: router
-                        )
-                    )
-                }
+        TabView {
+            NavigationStack {
+                HomeLandingView()
+            }
+            .tabItem {
+                Label("Главная", systemImage: "house")
+            }
+ 
+            NavigationStack {
+                RoomsInputView(viewModel: RoomsInputViewModel(
+                    store: store,
+                    router: router)
+                )
+            }
+            .tabItem {
+                Label("Расчет", systemImage: "compass.drawing")
+            }
+ 
+            NavigationStack {
+                // TODO: заменить на реальный экран
+                Text("Сметы")
+            }
+            .tabItem {
+                Label("Сметы", systemImage: "checklist")
             }
         }
-        .id(router.rootViewID)
+        .tint(Color(red: 88/255, green: 154/255, blue: 244/255))
         .environmentObject(store)
         .environmentObject(router)
-        .task {
-            guard isShowingLaunchScreen else { return }
-
-            router.show(store.hasSavedEstimates ? .savedEstimates : .rooms)
-            isAppReady = true
-
-            if didFinishLaunchIntro {
-                isShowingLaunchScreen = false
-            }
-        }
-        .task {
-            guard isShowingLaunchScreen else { return }
-
-            try? await Task.sleep(for: .seconds(3))
-            didFinishLaunchIntro = true
-
-            if isAppReady {
-                isShowingLaunchScreen = false
-            } else {
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    showLaunchProgress = true
-                }
-            }
-        }
     }
+
+//    var body: some View {
+//        Group {
+//            if isShowingLaunchScreen {
+//                LaunchLoadingView(showProgress: showLaunchProgress)
+//            } else {
+//                switch router.rootScreen {
+//                case .savedEstimates:
+//                    SavedEstimatesView(viewModel: savedEstimatesViewModel)
+//                case .rooms:
+//                    RoomsInputView(
+//                        viewModel: RoomsInputViewModel(
+//                            store: store,
+//                            router: router
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//        .id(router.rootViewID)
+//        .environmentObject(store)
+//        .environmentObject(router)
+//        .task {
+//            guard isShowingLaunchScreen else { return }
+//
+//            router.show(store.hasSavedEstimates ? .savedEstimates : .rooms)
+//            isAppReady = true
+//
+//            if didFinishLaunchIntro {
+//                isShowingLaunchScreen = false
+//            }
+//        }
+//        .task {
+//            guard isShowingLaunchScreen else { return }
+//
+//            try? await Task.sleep(for: .seconds(3))
+//            didFinishLaunchIntro = true
+//
+//            if isAppReady {
+//                isShowingLaunchScreen = false
+//            } else {
+//                withAnimation(.easeInOut(duration: 0.25)) {
+//                    showLaunchProgress = true
+//                }
+//            }
+//        }
+//    }
 }

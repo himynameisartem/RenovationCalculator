@@ -40,7 +40,7 @@ final class RoomsInputViewModel: ObservableObject {
     }
 
     func totalArea() -> Double {
-        rooms.reduce(0) { $0 + $1.effectiveArea }
+        rooms.reduce(0) { $0 + $1.area }
     }
 
     func openSavedEstimates() {
