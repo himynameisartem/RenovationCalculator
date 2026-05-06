@@ -2,11 +2,19 @@ import SwiftUI
 import UIKit
 
 struct HomeLandingView: View {
-    @EnvironmentObject private var store: SavedEstimatesStore
-    @EnvironmentObject private var router: AppRouter
-    @State private var navigateToCalculator = false
-    @State private var navigateToRequest = false
-    @State private var navigateToPrice = false
+    let onOpenCalculator: () -> Void
+    let onOpenRequest: () -> Void
+    let onOpenPrice: () -> Void
+
+    init(
+        onOpenCalculator: @escaping () -> Void = {},
+        onOpenRequest: @escaping () -> Void = {},
+        onOpenPrice: @escaping () -> Void = {}
+    ) {
+        self.onOpenCalculator = onOpenCalculator
+        self.onOpenRequest = onOpenRequest
+        self.onOpenPrice = onOpenPrice
+    }
     
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
@@ -20,20 +28,6 @@ struct HomeLandingView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .navigationBarBackButtonHidden(true)
-        .navigationDestination(isPresented: $navigateToCalculator) {
-            RoomsInputView(viewModel: RoomsInputViewModel(
-                store: store,
-                router: router)
-            )
-            .environmentObject(store)
-            .environmentObject(router)
-        }
-        .navigationDestination(isPresented: $navigateToRequest) {
-            Text("Заявка на ремонт") // TODO: заменить на RequestView()
-        }
-        .navigationDestination(isPresented: $navigateToPrice) {
-            Text("Актуальный прайс") // TODO: заменить на PriceView()
-        }
     }
  
     // MARK: - Hero
@@ -106,7 +100,7 @@ struct HomeLandingView: View {
                     .frame(width: 120, height: 88)
                 ),
                 arrowColor: Color(red: 63/255, green: 123/255, blue: 227/255),
-                action: { navigateToCalculator = true }
+                action: onOpenCalculator
             )
  
             HomeActionCard(
@@ -128,7 +122,7 @@ struct HomeLandingView: View {
                     .frame(width: 112, height: 80)
                 ),
                 arrowColor: Color(red: 42/255, green: 111/255, blue: 243/255),
-                action: { navigateToRequest = true }
+                action: onOpenRequest
             )
  
             HomeActionCard(
@@ -150,7 +144,7 @@ struct HomeLandingView: View {
                     .frame(width: 112, height: 80)
                 ),
                 arrowColor: Color(red: 108/255, green: 174/255, blue: 95/255),
-                action: { navigateToPrice = true }
+                action: onOpenPrice
             )
         }
     }
@@ -320,11 +314,7 @@ private struct HomeAssetImage: View {
 }
  
 #Preview("Home only") {
-    let store = SavedEstimatesStore()
-    let router = AppRouter()
     NavigationStack {
         HomeLandingView()
     }
-    .environmentObject(store)
-    .environmentObject(router)
 }

@@ -67,7 +67,7 @@ struct MainEstimateView: View {
                 onSave: { vm.saveEstimate() }
             )
         }
-//        .toolbar(.hidden, for: .tabBar)
+        .toolbar(.visible, for: .tabBar)
         .sheet(isPresented: $vm.isQuantitySheetPresented) {
             if let item = vm.quantityItem {
                 QuantitySheet(item: item, rooms: vm.roomOptions) { qty in

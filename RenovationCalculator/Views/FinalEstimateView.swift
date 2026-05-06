@@ -193,6 +193,7 @@ struct FinalEstimateView: View {
                 CompanyContactsSheet(company: company, openURL: openURL)
             }
         }
+        .toolbar(.visible, for: .tabBar)
     }
 
     // MARK: - Steps Bar

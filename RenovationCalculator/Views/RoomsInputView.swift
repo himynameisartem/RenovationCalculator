@@ -13,123 +13,121 @@ struct RoomsInputView: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            NavigationStack {
-                VStack(spacing: 0) {
-                    stepsBar
-                        .padding(.horizontal, 20)
-                        .padding(.top, 8)
-                        .padding(.bottom, 4)
+            VStack(spacing: 0) {
+                stepsBar
+                    .padding(.horizontal, 20)
+                    .padding(.top, 8)
+                    .padding(.bottom, 4)
 
-                    ScrollView(.vertical, showsIndicators: false) {
-                        VStack(alignment: .leading, spacing: 16) {
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 16) {
 
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("Укажите помещения")
-                                    .font(.system(size: 28, weight: .bold))
-                                    .foregroundColor(.primary)
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Укажите помещения")
+                                .font(.system(size: 28, weight: .bold))
+                                .foregroundColor(.primary)
 
-                                Text("Выберите количество комнат и их\nпараметров или продолжите без них.")
-                                    .font(.system(size: 14, weight: .regular))
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding(.horizontal, 20)
-                            .padding(.top, 16)
-
-                            // Карточка комнат
-                            VStack(spacing: 0) {
-                                RoomTypeRow(
-                                    title: "Жилые комнаты",
-                                    icon: "sofa",
-                                    iconColor: Color(red: 91/255, green: 147/255, blue: 234/255),
-                                    iconBg: Color(red: 91/255, green: 147/255, blue: 234/255).opacity(0.12),
-                                    count: $vm.livingCount,
-                                    totalCount: vm.count(for: .living),
-                                    roomIndices: vm.roomsIndices(for: .living),
-                                    rooms: $vm.rooms
-                                )
-                                Divider().padding(.leading, 64)
-                                RoomTypeRow(
-                                    title: "Кухня",
-                                    icon: "refrigerator",
-                                    iconColor: Color(red: 76/255, green: 175/255, blue: 110/255),
-                                    iconBg: Color(red: 76/255, green: 175/255, blue: 110/255).opacity(0.12),
-                                    count: $vm.kitchenCount,
-                                    totalCount: vm.count(for: .kitchen),
-                                    roomIndices: vm.roomsIndices(for: .kitchen),
-                                    rooms: $vm.rooms
-                                )
-                                Divider().padding(.leading, 64)
-                                RoomTypeRow(
-                                    title: "Гостиная",
-                                    icon: "tv",
-                                    iconColor: Color(red: 224/255, green: 122/255, blue: 78/255),
-                                    iconBg: Color(red: 224/255, green: 122/255, blue: 78/255).opacity(0.12),
-                                    count: $vm.hallwayCount,
-                                    totalCount: vm.count(for: .hallway),
-                                    roomIndices: vm.roomsIndices(for: .hallway),
-                                    rooms: $vm.rooms
-                                )
-                                Divider().padding(.leading, 64)
-                                RoomTypeRow(
-                                    title: "Санузел",
-                                    icon: "shower",
-                                    iconColor: Color(red: 130/255, green: 100/255, blue: 200/255),
-                                    iconBg: Color(red: 130/255, green: 100/255, blue: 200/255).opacity(0.12),
-                                    count: $vm.bathroomCount,
-                                    totalCount: vm.count(for: .bathroom),
-                                    roomIndices: vm.roomsIndices(for: .bathroom),
-                                    rooms: $vm.rooms
-                                )
-                            }
-                            .background(Color.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                            .shadow(color: Color.black.opacity(0.06), radius: 12, y: 4)
-                            .padding(.horizontal, 16)
-
-                            // Карточка общей площади
-                            HStack(spacing: 14) {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .fill(Color(red: 91/255, green: 147/255, blue: 234/255).opacity(0.12))
-                                        .frame(width: 48, height: 48)
-                                    Image(systemName: "square.split.bottomrightquarter")
-                                        .font(.system(size: 22, weight: .medium))
-                                        .foregroundColor(Color(red: 91/255, green: 147/255, blue: 234/255))
-                                }
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Общая площадь:")
-                                        .font(.system(size: 13, weight: .regular))
-                                        .foregroundColor(.secondary)
-                                    HStack(alignment: .firstTextBaseline, spacing: 2) {
-                                        Text(vm.totalArea() > 0 ? String(format: "%.1f", vm.totalArea()) : "0")
-                                            .font(.system(size: 26, weight: .bold))
-                                            .foregroundColor(.primary)
-                                        Text("м²")
-                                            .font(.system(size: 16, weight: .medium))
-                                            .foregroundColor(.secondary)
-                                    }
-                                }
-                                Spacer()
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 14)
-                            .background(Color.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                            .shadow(color: Color.black.opacity(0.06), radius: 12, y: 4)
-                            .padding(.horizontal, 16)
+                            Text("Выберите количество комнат и их\nпараметров или продолжите без них.")
+                                .font(.system(size: 14, weight: .regular))
+                                .foregroundColor(.secondary)
                         }
-                        .padding(.bottom, vm.canOpenSavedEstimates ? 160 : 110)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 16)
+
+                        // Карточка комнат
+                        VStack(spacing: 0) {
+                            RoomTypeRow(
+                                title: "Жилые комнаты",
+                                icon: "sofa",
+                                iconColor: Color(red: 91/255, green: 147/255, blue: 234/255),
+                                iconBg: Color(red: 91/255, green: 147/255, blue: 234/255).opacity(0.12),
+                                count: $vm.livingCount,
+                                totalCount: vm.count(for: .living),
+                                roomIndices: vm.roomsIndices(for: .living),
+                                rooms: $vm.rooms
+                            )
+                            Divider().padding(.leading, 64)
+                            RoomTypeRow(
+                                title: "Кухня",
+                                icon: "refrigerator",
+                                iconColor: Color(red: 76/255, green: 175/255, blue: 110/255),
+                                iconBg: Color(red: 76/255, green: 175/255, blue: 110/255).opacity(0.12),
+                                count: $vm.kitchenCount,
+                                totalCount: vm.count(for: .kitchen),
+                                roomIndices: vm.roomsIndices(for: .kitchen),
+                                rooms: $vm.rooms
+                            )
+                            Divider().padding(.leading, 64)
+                            RoomTypeRow(
+                                title: "Гостиная",
+                                icon: "tv",
+                                iconColor: Color(red: 224/255, green: 122/255, blue: 78/255),
+                                iconBg: Color(red: 224/255, green: 122/255, blue: 78/255).opacity(0.12),
+                                count: $vm.hallwayCount,
+                                totalCount: vm.count(for: .hallway),
+                                roomIndices: vm.roomsIndices(for: .hallway),
+                                rooms: $vm.rooms
+                            )
+                            Divider().padding(.leading, 64)
+                            RoomTypeRow(
+                                title: "Санузел",
+                                icon: "shower",
+                                iconColor: Color(red: 130/255, green: 100/255, blue: 200/255),
+                                iconBg: Color(red: 130/255, green: 100/255, blue: 200/255).opacity(0.12),
+                                count: $vm.bathroomCount,
+                                totalCount: vm.count(for: .bathroom),
+                                roomIndices: vm.roomsIndices(for: .bathroom),
+                                rooms: $vm.rooms
+                            )
+                        }
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .shadow(color: Color.black.opacity(0.06), radius: 12, y: 4)
+                        .padding(.horizontal, 16)
+
+                        // Карточка общей площади
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(Color(red: 91/255, green: 147/255, blue: 234/255).opacity(0.12))
+                                    .frame(width: 48, height: 48)
+                                Image(systemName: "square.split.bottomrightquarter")
+                                    .font(.system(size: 22, weight: .medium))
+                                    .foregroundColor(Color(red: 91/255, green: 147/255, blue: 234/255))
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Общая площадь:")
+                                    .font(.system(size: 13, weight: .regular))
+                                    .foregroundColor(.secondary)
+                                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                                    Text(vm.totalArea() > 0 ? String(format: "%.1f", vm.totalArea()) : "0")
+                                        .font(.system(size: 26, weight: .bold))
+                                        .foregroundColor(.primary)
+                                    Text("м²")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            Spacer()
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 14)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .shadow(color: Color.black.opacity(0.06), radius: 12, y: 4)
+                        .padding(.horizontal, 16)
                     }
-                    .onTapGesture { hideKeyboard() }
+                    .padding(.bottom, vm.canOpenSavedEstimates ? 160 : 110)
                 }
-                .background(Color(UIColor.systemGroupedBackground))
-                .navigationTitle("Калькулятор")
-                .navigationBarTitleDisplayMode(.inline)
-                .navigationDestination(isPresented: $vm.goNext) {
-                    MainEstimateView(rooms: vm.rooms)
-                        .environmentObject(store)
-                        .environmentObject(router)
-                }
+                .onTapGesture { hideKeyboard() }
+            }
+            .background(Color(UIColor.systemGroupedBackground))
+            .navigationTitle("Калькулятор")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(isPresented: $vm.goNext) {
+                MainEstimateView(rooms: vm.rooms)
+                    .environmentObject(store)
+                    .environmentObject(router)
             }
 
             if !vm.goNext {
