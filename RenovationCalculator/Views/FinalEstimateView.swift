@@ -30,6 +30,7 @@ struct FinalEstimateView: View {
     @State private var didShowInitialInfoHint = false
     @State private var selectedCompanyID: UUID? = nil
     @State private var showContactsSheet = false
+    @State private var showRequestForm = false
 
     let lines: [EstimateSummaryLine]
     let total: Double
@@ -191,6 +192,16 @@ struct FinalEstimateView: View {
         .sheet(isPresented: $showContactsSheet) {
             if let company = selectedCompany {
                 CompanyContactsSheet(company: company, openURL: openURL)
+            }
+        }
+        .sheet(isPresented: $showRequestForm) {
+            RequestFormSheet(estimateLinesText: estimateLinesForRequest()) { name, phone, email, comment, estimate in
+                print("REQUEST_FROM_FINAL_ESTIMATE")
+                print("name: \(name)")
+                print("phone: \(phone)")
+                print("email: \(email)")
+                print("comment: \(comment)")
+                print("estimate: \(estimate ?? "none")")
             }
         }
         .toolbar(.visible, for: .tabBar)
@@ -364,7 +375,7 @@ struct FinalEstimateView: View {
 
             VStack(spacing: 6) {
                 Button {
-                    // TODO: заказать звонок
+                    showRequestForm = true
                 } label: {
                     Text("Заказать звонок")
                         .font(.system(size: 12, weight: .semibold))
@@ -427,6 +438,18 @@ struct FinalEstimateView: View {
                 .shadow(color: Color.black.opacity(0.08), radius: 10, y: 4)
         }
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private func estimateLinesForRequest() -> String? {
+        guard !lines.isEmpty else { return nil }
+
+        return lines.map { line in
+            let quantity = String(format: "%.1f", line.quantity)
+            let unitPrice = String(format: "%.0f", line.unitPrice)
+            let subtotal = String(format: "%.0f", line.subtotal)
+            return "\(line.title): \(quantity) \(line.unit) × \(unitPrice) ₽ = \(subtotal) ₽"
+        }
+        .joined(separator: "\n")
     }
 }
 

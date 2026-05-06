@@ -78,23 +78,27 @@ struct QuantitySheet: View {
                         ForEach($localRooms) { $room in
                             HStack(spacing: 12) {
                                 Text(room.name)
+                                    .lineLimit(2)
+                                    .multilineTextAlignment(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
 
                                 Text("\(room.area, specifier: "%.1f") м²")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-                                    .frame(width: 72, alignment: .trailing)
+                                    .frame(minWidth: 64, alignment: .trailing)
 
                                 Toggle("", isOn: $room.isSelected)
                                     .labelsHidden()
                                     .disabled(!isAreaUnit)
-                                    .frame(width: 52, alignment: .trailing)
+                                    .fixedSize()
                             }
+                            .padding(.trailing, 6)
                             .opacity(isAreaUnit ? 1 : 0.4)
                         }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.trailing, 6)
             }
 
             HStack {

@@ -5,6 +5,14 @@ struct HomeLandingView: View {
     let onOpenCalculator: () -> Void
     let onOpenRequest: () -> Void
     let onOpenPrice: () -> Void
+    @State private var showRequestForm = false
+    @State private var showPriceConfirm = false
+    @State private var isDownloadingPrice = false
+    @State private var downloadedPriceURL: URL?
+    @State private var showShareSheet = false
+    @State private var downloadErrorText: String?
+    @State private var showDownloadError = false
+    private let pricePDFURL = URL(string: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf")!
 
     init(
         onOpenCalculator: @escaping () -> Void = {},
@@ -28,6 +36,52 @@ struct HomeLandingView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .navigationBarBackButtonHidden(true)
+        .sheet(isPresented: $showRequestForm) {
+            RequestFormSheet(estimateLinesText: nil) { name, phone, email, comment, estimate in
+                print("REQUEST_FROM_HOME")
+                print("name: \(name)")
+                print("phone: \(phone)")
+                print("email: \(email)")
+                print("comment: \(comment)")
+                print("estimate: \(estimate ?? "none")")
+            }
+        }
+        .sheet(isPresented: $showShareSheet) {
+            if let url = downloadedPriceURL {
+                ShareSheetView(items: [url])
+            }
+        }
+        .alert("Скачать прайс?", isPresented: $showPriceConfirm) {
+            Button("Скачать") {
+                Task { await downloadPricePDF() }
+            }
+            Button("Отмена", role: .cancel) {}
+        } message: {
+            Text("Будет загружен актуальный прайс в PDF.")
+        }
+        .alert("Ошибка загрузки", isPresented: $showDownloadError) {
+            Button("Ок", role: .cancel) {}
+        } message: {
+            Text(downloadErrorText ?? "Не удалось скачать файл.")
+        }
+        .overlay {
+            if isDownloadingPrice {
+                ZStack {
+                    Color.black.opacity(0.2).ignoresSafeArea()
+                    VStack(spacing: 10) {
+                        ProgressView()
+                        Text("Загрузка прайса...")
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Color(UIColor.secondarySystemBackground))
+                    )
+                }
+            }
+        }
     }
  
     // MARK: - Hero
@@ -122,7 +176,10 @@ struct HomeLandingView: View {
                     .frame(width: 112, height: 80)
                 ),
                 arrowColor: Color(red: 42/255, green: 111/255, blue: 243/255),
-                action: onOpenRequest
+                action: {
+                    onOpenRequest()
+                    showRequestForm = true
+                }
             )
  
             HomeActionCard(
@@ -144,8 +201,36 @@ struct HomeLandingView: View {
                     .frame(width: 112, height: 80)
                 ),
                 arrowColor: Color(red: 108/255, green: 174/255, blue: 95/255),
-                action: onOpenPrice
+                action: {
+                    onOpenPrice()
+                    showPriceConfirm = true
+                }
             )
+        }
+    }
+    
+    private func downloadPricePDF() async {
+        isDownloadingPrice = true
+        defer { isDownloadingPrice = false }
+
+        do {
+            let (tempURL, response) = try await URLSession.shared.download(from: pricePDFURL)
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else {
+                throw URLError(.badServerResponse)
+            }
+
+            let fileName = "Актуальный_прайс.pdf"
+            let destination = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+            if FileManager.default.fileExists(atPath: destination.path) {
+                try FileManager.default.removeItem(at: destination)
+            }
+            try FileManager.default.copyItem(at: tempURL, to: destination)
+
+            downloadedPriceURL = destination
+            showShareSheet = true
+        } catch {
+            downloadErrorText = error.localizedDescription
+            showDownloadError = true
         }
     }
  

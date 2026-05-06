@@ -27,6 +27,8 @@
 		3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */; };
 		3105BE7F2F47307400268CC4 /* MainEstimateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */; };
 		3119B39F2FAB3FA000C8C596 /* OnboardingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3119B39E2FAB3FA000C8C596 /* OnboardingOverlayView.swift */; };
+		3119B3A12FAB42E800C8C596 /* RequestFormSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3119B3A02FAB42E800C8C596 /* RequestFormSheet.swift */; };
+		3119B3A52FAB503B00C8C596 /* ShareSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3119B3A42FAB503B00C8C596 /* ShareSheetView.swift */; };
 		3155C1A02F63E0C7005C06F1 /* RoomsInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */; };
 		3155C1A22F63E0DD005C06F1 /* RoomsInputViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */; };
 		3155C1A72F63FC54005C06F1 /* Extension+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3155C1A62F63FC54005C06F1 /* Extension+View.swift */; };
@@ -61,6 +63,8 @@
 		3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogLoader.swift; sourceTree = "<group>"; };
 		3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainEstimateViewModel.swift; sourceTree = "<group>"; };
 		3119B39E2FAB3FA000C8C596 /* OnboardingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingOverlayView.swift; sourceTree = "<group>"; };
+		3119B3A02FAB42E800C8C596 /* RequestFormSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestFormSheet.swift; sourceTree = "<group>"; };
+		3119B3A42FAB503B00C8C596 /* ShareSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheetView.swift; sourceTree = "<group>"; };
 		3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsInputView.swift; sourceTree = "<group>"; };
 		3155C1A12F63E0DD005C06F1 /* RoomsInputViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsInputViewModel.swift; sourceTree = "<group>"; };
 		3155C1A62F63FC54005C06F1 /* Extension+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+View.swift"; sourceTree = "<group>"; };
@@ -158,7 +162,9 @@
 				3155C1AE2F642AC0005C06F1 /* FinalEstimateView.swift */,
 				31E4A0B63042B5E30068D7A1 /* HomeLandingView.swift */,
 				31A0F3D92F7554F200B1A112 /* LaunchLoadingView.swift */,
+				3119B3A02FAB42E800C8C596 /* RequestFormSheet.swift */,
 				3119B39E2FAB3FA000C8C596 /* OnboardingOverlayView.swift */,
+				3119B3A42FAB503B00C8C596 /* ShareSheetView.swift */,
 				3155C1AC2F642800005C06F1 /* SummarySheetView.swift */,
 				3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */,
 				3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */,
@@ -274,6 +280,7 @@
 				310172A72F72672500C54158 /* SavedEstimatesView.swift in Sources */,
 				310172A92F726A9300C54158 /* SavedEstimatesStore.swift in Sources */,
 				3155C1A02F63E0C7005C06F1 /* RoomsInputView.swift in Sources */,
+				3119B3A12FAB42E800C8C596 /* RequestFormSheet.swift in Sources */,
 				3105BE7F2F47307400268CC4 /* MainEstimateViewModel.swift in Sources */,
 				3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */,
 				310172AB2F726AA100C54158 /* AppRouter.swift in Sources */,
@@ -289,6 +296,7 @@
 				310172AF2F727DA600C54158 /* CatalogService.swift in Sources */,
 				3155C1A72F63FC54005C06F1 /* Extension+View.swift in Sources */,
 				310172B42F72829800C54158 /* RoomInput.swift in Sources */,
+				3119B3A52FAB503B00C8C596 /* ShareSheetView.swift in Sources */,
 				3105BE662F4723BB00268CC4 /* WorkSection.swift in Sources */,
 				3119B39F2FAB3FA000C8C596 /* OnboardingOverlayView.swift in Sources */,
 				3105BE572F47211F00268CC4 /* RenovationCalculatorApp.swift in Sources */,

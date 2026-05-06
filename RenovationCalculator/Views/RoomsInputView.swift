@@ -388,6 +388,8 @@ private struct RoomTypeRow: View {
 
 private struct RoomParamsView: View {
     @Binding var room: RoomInput
+    @State private var areaText: String = ""
+    @State private var heightText: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -398,27 +400,64 @@ private struct RoomParamsView: View {
             HStack {
                 Text("Площадь").font(.system(size: 14)).foregroundColor(.secondary)
                 Spacer()
-                TextField("м²", value: $room.area, format: .number)
+                TextField("м²", text: $areaText)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
                     .padding(.horizontal, 8).padding(.vertical, 5)
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(8).frame(width: 64)
+                    .onChange(of: areaText) { _, newValue in
+                        room.area = parseDecimal(newValue) ?? 0
+                    }
                 Text("м²").font(.system(size: 14)).foregroundColor(.secondary)
             }
 
             HStack {
                 Text("Высота").font(.system(size: 14)).foregroundColor(.secondary)
                 Spacer()
-                TextField("м", value: $room.height, format: .number)
+                TextField("м", text: $heightText)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
                     .padding(.horizontal, 8).padding(.vertical, 5)
                     .background(Color(UIColor.systemGray6))
                     .cornerRadius(8).frame(width: 64)
+                    .onChange(of: heightText) { _, newValue in
+                        if let value = parseDecimal(newValue), value > 0 {
+                            room.height = value
+                        }
+                    }
                 Text("м").font(.system(size: 14)).foregroundColor(.secondary)
             }
         }
+        .onAppear {
+            areaText = room.area == 0 ? "" : formatDecimal(room.area)
+            heightText = formatDecimal(room.height)
+        }
+        .onChange(of: room.area) { _, newValue in
+            let normalized = newValue == 0 ? "" : formatDecimal(newValue)
+            if areaText != normalized {
+                areaText = normalized
+            }
+        }
+        .onChange(of: room.height) { _, newValue in
+            let normalized = formatDecimal(newValue)
+            if heightText != normalized {
+                heightText = normalized
+            }
+        }
+    }
+    
+    private func parseDecimal(_ raw: String) -> Double? {
+        let normalized = raw.replacingOccurrences(of: ",", with: ".")
+        return Double(normalized)
+    }
+    
+    private func formatDecimal(_ value: Double) -> String {
+        let text = String(format: "%.2f", value)
+        let trimmed = text
+            .replacingOccurrences(of: #"([.,]0+)$"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: #"[.,]$"#, with: "", options: .regularExpression)
+        return trimmed.replacingOccurrences(of: ".", with: ",")
     }
 }
 
