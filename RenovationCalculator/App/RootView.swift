@@ -15,6 +15,10 @@ private enum RootTab: Hashable {
 }
 
 struct RootView: View {
+    @AppStorage("hasSeenHomeOnboarding") private var hasSeenHomeOnboarding = false
+    @AppStorage("hasSeenCalculatorOnboarding") private var hasSeenCalculatorOnboarding = false
+    @AppStorage("hasSeenEstimatesOnboarding") private var hasSeenEstimatesOnboarding = false
+
     @StateObject private var store: SavedEstimatesStore
     @StateObject private var router: AppRouter
     @StateObject private var savedEstimatesViewModel: SavedEstimatesViewModel
@@ -30,6 +34,44 @@ struct RootView: View {
     @State private var showLaunchProgress = false
     @State private var isAppReady = false
     @State private var didFinishLaunchIntro = false
+    @State private var activeOnboardingTab: RootTab?
+
+    private let homeOnboardingSteps: [OnboardingStep] = [
+        OnboardingStep(
+            title: "Добро пожаловать",
+            subtitle: "Это заготовка подсказки. Добавь сюда свой текст и картинку.",
+            imageName: nil
+        ),
+        OnboardingStep(
+            title: "Выбор помещений",
+            subtitle: "Покажи пользователю, как заполнить комнаты и перейти к работам.",
+            imageName: nil
+        ),
+        OnboardingStep(
+            title: "Финальная смета",
+            subtitle: "Расскажи, как сохранить смету и где посмотреть сохраненные расчеты.",
+            imageName: nil
+        )
+    ]
+    private let calculatorOnboardingSteps: [OnboardingStep] = [
+        OnboardingStep(
+            title: "Калькулятор",
+            subtitle: "Здесь выбери помещения и задай параметры для расчета стоимости.",
+            imageName: nil
+        ),
+        OnboardingStep(
+            title: "Далее к работам",
+            subtitle: "После заполнения нажми «Продолжить», чтобы перейти к списку работ.",
+            imageName: nil
+        )
+    ]
+    private let estimatesOnboardingSteps: [OnboardingStep] = [
+        OnboardingStep(
+            title: "Сохраненные сметы",
+            subtitle: "Здесь хранятся сохраненные расчеты. Можно открыть детали и удалить свайпом.",
+            imageName: nil
+        )
+    ]
 
     init() {
         let store = SavedEstimatesStore()
@@ -89,6 +131,7 @@ struct RootView: View {
                 .tint(Color(red: 88/255, green: 154/255, blue: 244/255))
                 .onChange(of: selectedTab) { _, newTab in
                     resetStack(for: newTab)
+                    showOnboardingIfNeeded(for: newTab)
                 }
                 .onReceive(router.$rootScreen.dropFirst()) { screen in
                     switch screen {
@@ -101,8 +144,34 @@ struct RootView: View {
                 .id(router.rootViewID)
             }
         }
+        .overlay {
+            if let tab = activeOnboardingTab {
+                OnboardingOverlayView(
+                    steps: onboardingSteps(for: tab),
+                    onFinish: {
+                        markOnboardingSeen(for: tab)
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            activeOnboardingTab = nil
+                        }
+                    },
+                    onSkip: {
+                        markOnboardingSeen(for: tab)
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            activeOnboardingTab = nil
+                        }
+                    }
+                )
+                .transition(.opacity)
+                .zIndex(1000)
+            }
+        }
         .environmentObject(store)
         .environmentObject(router)
+        .onChange(of: isShowingLaunchScreen) { _, isVisible in
+            if !isVisible {
+                showOnboardingIfNeeded(for: selectedTab)
+            }
+        }
         .task {
             guard isShowingLaunchScreen else { return }
             isAppReady = true
@@ -140,6 +209,46 @@ struct RootView: View {
             calculatorStackID = UUID()
         case .estimates:
             estimatesStackID = UUID()
+        }
+    }
+
+    private func showOnboardingIfNeeded(for tab: RootTab) {
+        guard !isShowingLaunchScreen else { return }
+        guard activeOnboardingTab == nil else { return }
+        guard shouldShowOnboarding(for: tab) else { return }
+        activeOnboardingTab = tab
+    }
+
+    private func shouldShowOnboarding(for tab: RootTab) -> Bool {
+        switch tab {
+        case .home:
+            return !hasSeenHomeOnboarding
+        case .calculator:
+            return !hasSeenCalculatorOnboarding
+        case .estimates:
+            return !hasSeenEstimatesOnboarding
+        }
+    }
+
+    private func markOnboardingSeen(for tab: RootTab) {
+        switch tab {
+        case .home:
+            hasSeenHomeOnboarding = true
+        case .calculator:
+            hasSeenCalculatorOnboarding = true
+        case .estimates:
+            hasSeenEstimatesOnboarding = true
+        }
+    }
+
+    private func onboardingSteps(for tab: RootTab) -> [OnboardingStep] {
+        switch tab {
+        case .home:
+            return homeOnboardingSteps
+        case .calculator:
+            return calculatorOnboardingSteps
+        case .estimates:
+            return estimatesOnboardingSteps
         }
     }
 }
