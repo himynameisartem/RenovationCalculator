@@ -59,8 +59,8 @@ struct RoomsInputView: View {
                             )
                             Divider().padding(.leading, 64)
                             RoomTypeRow(
-                                title: "Гостиная",
-                                icon: "tv",
+                                title: "Прихожая",
+                                icon: "door.right.hand.open",
                                 iconColor: Color(red: 224/255, green: 122/255, blue: 78/255),
                                 iconBg: Color(red: 224/255, green: 122/255, blue: 78/255).opacity(0.12),
                                 count: $vm.hallwayCount,

@@ -89,7 +89,7 @@ struct HomeLandingView: View {
     private var heroSection: some View {
         ZStack(alignment: .topLeading) {
             HomeAssetImage(
-                assetName: "home_hero_image",
+                assetName: "landingImage",
                 placeholder: AnyView(heroPlaceholder)
             )
             .frame(maxWidth: .infinity)
@@ -133,7 +133,7 @@ struct HomeLandingView: View {
                 title: "Калькулятор",
                 subtitle: "Рассчитайте стоимость\nремонта квартиры",
                 icon: "plus.forwardslash.minus",
-                accentColor: Color(red: 63/255, green: 123/255, blue: 227/255),
+                accentColor: Color(red: 150/255, green: 200/255, blue: 255/255),
                 foregroundColor: .white,
                 isPrimaryStyle: true,
                 background: AnyView(
@@ -148,10 +148,21 @@ struct HomeLandingView: View {
                 ),
                 decorativeContent: AnyView(
                     HomeAssetImage(
-                        assetName: "home_card_calculator_bg",
+                        assetName: "calculatorImg",
                         placeholder: AnyView(calculatorCardPlaceholder)
                     )
-                    .frame(width: 120, height: 88)
+                    .frame(width: 120, height: 100)
+                    .offset(x: 50, y: 0)
+                    .mask(
+                        LinearGradient(
+                            colors: [
+                                .black.opacity(0.35),
+                                .clear
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
                 ),
                 arrowColor: Color(red: 63/255, green: 123/255, blue: 227/255),
                 action: onOpenCalculator
@@ -170,10 +181,21 @@ struct HomeLandingView: View {
                 ),
                 decorativeContent: AnyView(
                     HomeAssetImage(
-                        assetName: "home_card_request_bg",
+                        assetName: "docsImg",
                         placeholder: AnyView(requestCardPlaceholder)
                     )
-                    .frame(width: 112, height: 80)
+                    .frame(width: 112, height: 100)
+                    .offset(x: 30, y: 0)
+                    .mask(
+                        LinearGradient(
+                            colors: [
+                                .black.opacity(0.35),
+                                .clear
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
                 ),
                 arrowColor: Color(red: 42/255, green: 111/255, blue: 243/255),
                 action: {
@@ -195,10 +217,22 @@ struct HomeLandingView: View {
                 ),
                 decorativeContent: AnyView(
                     HomeAssetImage(
-                        assetName: "home_card_price_bg",
+                        assetName: "coinsImg",
                         placeholder: AnyView(priceCardPlaceholder)
                     )
-                    .frame(width: 112, height: 80)
+                    .scaledToFit()
+                    .frame(width: 112, height: 120)
+                    .offset(x: 40, y: 0)
+                    .mask(
+                        LinearGradient(
+                            colors: [
+                                .black.opacity(0.55),
+                                .clear
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
                 ),
                 arrowColor: Color(red: 108/255, green: 174/255, blue: 95/255),
                 action: {

@@ -175,6 +175,25 @@ extension MainEstimateView {
         }
     }
     
+    private func categoryIcon(_ category: String) -> Image {
+        switch category {
+        case  "Демонтажные работы":
+            return Image(systemName: "hammer.fill")
+        case  "Черновые отделочные работы":
+            return Image(systemName: "paintbrush.fill")
+        case  "Чистовые отделочные работы":
+            return Image(systemName: "level.fill")
+        case  "Электромонтажные  работы":
+            return Image(systemName: "lightbulb.max.fill")
+        case  "Сантехнические  работы":
+            return Image(systemName: "spigot.fill")
+        case  "Подготовительные  работы":
+            return Image(systemName: "wrench.and.screwdriver.fill")
+        default:
+            return Image(systemName: "hammer.fill")
+        }
+    }
+    
     private var categoryTabs: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 12) {
@@ -188,7 +207,7 @@ extension MainEstimateView {
                         expandedSectionIDs.removeAll()
                     } label: {
                         VStack(spacing: 8) {
-                            Image(systemName: "hammer.fill")
+                            categoryIcon(category.title)
                                 .font(.title3)
                             
                             Text(category.title)
