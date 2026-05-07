@@ -12,6 +12,7 @@ struct RequestFormSheet: View {
     @State private var comment = ""
     @State private var agreeToPolicy = false
     @FocusState private var focusedField: Field?
+    
     private let policyURL = URL(string: "https://example.com")!
     
     private enum Field: Hashable {
@@ -47,6 +48,7 @@ struct RequestFormSheet: View {
                             .keyboardType(.phonePad)
                             .textContentType(.telephoneNumber)
                             .focused($focusedField, equals: .phone)
+                        
                         if !phone.isEmpty && !isPhoneValid {
                             Text("Некорректный телефон")
                                 .font(.caption)
@@ -108,6 +110,7 @@ struct RequestFormSheet: View {
                 }
 
                 Button("Заказать расчет") {
+                    sendToYandex()
                     onSubmit(name, phone, email, comment, estimateLinesText)
                     dismiss()
                 }
@@ -143,6 +146,39 @@ struct RequestFormSheet: View {
                 }
             }
         }
+    }
+
+    // MARK: - Сетевая часть
+    private func sendToYandex() {
+        guard let url = URL(string: "https://functions.yandexcloud.net/d4etr5cmivffs85lr4d3") else { return }
+        
+        
+        let fullEstimate = """
+        Имя: \(name)
+        Комментарий: \(comment)
+        
+        Смета:
+        \(estimateLinesText ?? "Смета пуста")
+        """
+        
+        let body: [String: Any] = [
+            "phone": phone,
+            "email": email,
+            "estimate": fullEstimate
+        ]
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        } catch {
+            print("Ошибка JSON: \(error)")
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request).resume()
     }
 
     private var consentText: AttributedString {

@@ -39,6 +39,7 @@
 		31A0F3D82F753F7C00B1A112 /* FinalEstimateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */; };
 		31A0F3DA2F7554F200B1A112 /* LaunchLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D92F7554F200B1A112 /* LaunchLoadingView.swift */; };
 		31E4A0B73042B5E30068D7A1 /* HomeLandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E4A0B63042B5E30068D7A1 /* HomeLandingView.swift */; };
+		31FAC8452FAD04420082E141 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FAC8442FAD04420082E141 /* NetworkManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,6 +76,7 @@
 		31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalEstimateViewModel.swift; sourceTree = "<group>"; };
 		31A0F3D92F7554F200B1A112 /* LaunchLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchLoadingView.swift; sourceTree = "<group>"; };
 		31E4A0B63042B5E30068D7A1 /* HomeLandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLandingView.swift; sourceTree = "<group>"; };
+		31FAC8442FAD04420082E141 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				3105BE7C2F472F0300268CC4 /* CatalogLoader.swift */,
+				31FAC8442FAD04420082E141 /* NetworkManager.swift */,
 			);
 			path = DataManager;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				31A0F3D82F753F7C00B1A112 /* FinalEstimateViewModel.swift in Sources */,
 				31A0F3DA2F7554F200B1A112 /* LaunchLoadingView.swift in Sources */,
 				3105BE682F4723C600268CC4 /* WorkItem.swift in Sources */,
+				31FAC8452FAD04420082E141 /* NetworkManager.swift in Sources */,
 				310172AE2F727DA600C54158 /* EstimateSaveService.swift in Sources */,
 				310172B62F7282C600C54158 /* RoomType.swift in Sources */,
 				310172AF2F727DA600C54158 /* CatalogService.swift in Sources */,
