@@ -99,16 +99,28 @@ extension MainEstimateView {
         VStack(spacing: 0) {
             topProgressBar
             categoryTabs
-            
-            ScrollView {
-                LazyVStack(spacing: 14) {
-                    ForEach(vm.currentSections) { section in
-                        sectionCard(section)
+
+            ScrollViewReader { proxy in
+                ScrollView {
+                    Color.clear
+                        .frame(height: 1)
+                        .id("top-anchor")
+
+                    LazyVStack(spacing: 14) {
+                        ForEach(vm.currentSections) { section in
+                            sectionCard(section)
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 14)
+                    .padding(.bottom, 180)
+                }
+                .onChange(of: vm.selectedCategoryIndex) { _, _ in
+                    expandedSectionIDs.removeAll()
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        proxy.scrollTo("top-anchor", anchor: .top)
                     }
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 14)
-                .padding(.bottom, 180)
             }
         }
         .overlay(alignment: .bottom) {
