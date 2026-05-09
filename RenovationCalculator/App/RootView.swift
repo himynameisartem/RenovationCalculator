@@ -106,6 +106,9 @@ struct RootView: View {
                         HomeLandingView(
                             onOpenCalculator: {
                                 openRootTab(.calculator)
+                            },
+                            onShowHelp: {
+                                forceShowOnboarding(for: .home)
                             }
                         )
                     }
@@ -122,6 +125,16 @@ struct RootView: View {
                                 router: router
                             )
                         )
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    forceShowOnboarding(for: .calculator)
+                                } label: {
+                                    Image(systemName: "questionmark")
+                                        .foregroundStyle(.black)
+                                }
+                            }
+                        }
                     }
                     .id(calculatorStackID)
                     .tabItem {
@@ -131,6 +144,16 @@ struct RootView: View {
 
                     NavigationStack {
                         SavedEstimatesView(viewModel: savedEstimatesViewModel)
+                            .toolbar {
+                                ToolbarItem(placement: .topBarTrailing) {
+                                    Button {
+                                        forceShowOnboarding(for: .estimates)
+                                    } label: {
+                                        Image(systemName: "questionmark")
+                                            .foregroundStyle(.black)
+                                    }
+                                }
+                            }
                     }
                     .id(estimatesStackID)
                     .tabItem {
@@ -227,6 +250,13 @@ struct RootView: View {
         guard activeOnboardingTab == nil else { return }
         guard shouldShowOnboarding(for: tab) else { return }
         activeOnboardingTab = tab
+    }
+
+    private func forceShowOnboarding(for tab: RootTab) {
+        guard !isShowingLaunchScreen else { return }
+        withAnimation(.easeInOut(duration: 0.2)) {
+            activeOnboardingTab = tab
+        }
     }
 
     private func shouldShowOnboarding(for tab: RootTab) -> Bool {

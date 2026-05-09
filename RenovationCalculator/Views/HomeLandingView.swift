@@ -5,6 +5,7 @@ struct HomeLandingView: View {
     let onOpenCalculator: () -> Void
     let onOpenRequest: () -> Void
     let onOpenPrice: () -> Void
+    let onShowHelp: () -> Void
     @State private var showRequestForm = false
     @State private var showPriceConfirm = false
     @State private var isDownloadingPrice = false
@@ -17,22 +18,45 @@ struct HomeLandingView: View {
     init(
         onOpenCalculator: @escaping () -> Void = {},
         onOpenRequest: @escaping () -> Void = {},
-        onOpenPrice: @escaping () -> Void = {}
+        onOpenPrice: @escaping () -> Void = {},
+        onShowHelp: @escaping () -> Void = {}
     ) {
         self.onOpenCalculator = onOpenCalculator
         self.onOpenRequest = onOpenRequest
         self.onOpenPrice = onOpenPrice
+        self.onShowHelp = onShowHelp
     }
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            VStack(spacing: 20) {
-                heroSection
-                cardsSection
-                    .padding(.horizontal, 18)
+        ZStack(alignment: .topTrailing) {
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    heroSection
+                    cardsSection
+                        .padding(.horizontal, 18)
+                }
+                .padding(.top, 16)
+                .padding(.bottom, 32)
             }
-            .padding(.top, 16)
-            .padding(.bottom, 32)
+
+            Button(action: onShowHelp) {
+                ZStack {
+                    Circle()
+                        .fill(Color.white.opacity(0.38))
+                        .frame(width: 40, height: 40)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.white.opacity(0.7), lineWidth: 1)
+                        )
+                        .shadow(color: Color.black.opacity(0.08), radius: 4, y: 1)
+                    Image(systemName: "questionmark")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.black.opacity(0.7))
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 32)
+            .padding(.trailing, 16)
         }
         .background(Color(UIColor.systemGroupedBackground))
         .navigationBarBackButtonHidden(true)

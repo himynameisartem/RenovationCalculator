@@ -51,13 +51,13 @@ struct FinalEstimateView: View {
             websiteURL: URL(string: "https://skfamily.moscow")!,
             phoneURL: URL(string: "tel:+79158303600")!, phone: "+7 915 830-36-00"),
         CompanyPlaceholder(
-            name: "СК Фемели", logoName: "femeliLogo",
+            name: "ТЛР Групп", logoName: "tlrLogo",
             websiteURL: URL(string: "https://skfamily.moscow")!,
-            phoneURL: URL(string: "tel:+79158303600")!, phone: "+7 915 830-36-00"),
-        CompanyPlaceholder(
-            name: "СК Фемели", logoName: "femeliLogo",
-            websiteURL: URL(string: "https://skfamily.moscow")!,
-            phoneURL: URL(string: "tel:+79158303600")!, phone: "+7 915 830-36-00"),
+            phoneURL: URL(string: "tel:++74950217123")!, phone: "++7 495 021-71-23"),
+//        CompanyPlaceholder(
+//            name: "СК Фемели", logoName: "femeliLogo",
+//            websiteURL: URL(string: "https://skfamily.moscow")!,
+//            phoneURL: URL(string: "tel:+79158303600")!, phone: "+7 915 830-36-00"),
     ]
 
     private var selectedCompany: CompanyPlaceholder? {

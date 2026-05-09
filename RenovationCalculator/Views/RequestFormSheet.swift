@@ -11,6 +11,10 @@ struct RequestFormSheet: View {
     @State private var email = ""
     @State private var comment = ""
     @State private var agreeToPolicy = false
+    @State private var showAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var isSending = false
     @FocusState private var focusedField: Field?
     
     private let policyURL = URL(string: "https://example.com")!
@@ -109,22 +113,39 @@ struct RequestFormSheet: View {
                     hideKeyboard()
                 }
 
-                Button("Заказать расчет") {
+                Button {
+                    isSending = true
                     sendToYandex()
-                    onSubmit(name, phone, email, comment, estimateLinesText)
-                    dismiss()
+                } label: {
+                    ZStack {
+                        // Если отправка идет — показываем крутилку
+                        if isSending {
+                            ProgressView()
+                                .tint(.white)
+                        } else {
+                            Text("Заказать расчет")
+                        }
+                    }
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .background(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .fill(canSubmit && !isSending ? Color.blue : Color(UIColor.systemGray4))
+                    )
                 }
-                .font(.system(size: 17, weight: .semibold))
-                .foregroundColor(.white)
-                .frame(maxWidth: .infinity, minHeight: 50)
-                .background(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .fill(canSubmit ? Color.blue : Color(UIColor.systemGray4))
-                )
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .padding(.bottom, 12)
-                .disabled(!canSubmit)
+                .disabled(!canSubmit || isSending)
+                // Алерт остается тот же
+                .alert(alertTitle, isPresented: $showAlert) {
+                    Button("OK") {
+                        if alertTitle == "Успешно" { dismiss() }
+                    }
+                } message: {
+                    Text(alertMessage)
+                }
             }
             .navigationTitle("Заявка на расчет")
             .navigationBarTitleDisplayMode(.inline)
@@ -150,22 +171,35 @@ struct RequestFormSheet: View {
 
     // MARK: - Сетевая часть
     private func sendToYandex() {
-        guard let url = URL(string: "https://functions.yandexcloud.net/d4etr5cmivffs85lr4d3") else { return }
+        // Чистим строку от случайных пробелов по краям
+        let urlString = "https://functions.yandexcloud.net/d4etr5cmivffs85lr4d3".trimmingCharacters(in: .whitespacesAndNewlines)
         
+        guard let url = URL(string: urlString) else {
+            self.isSending = false
+            self.alertTitle = "Ошибка"
+            self.alertMessage = "Некорректная ссылка сервера"
+            self.showAlert = true
+            return
+        }
+        
+        let safeEstimate = estimateLinesText ?? "Пусто"
         
         let fullEstimate = """
         Имя: \(name)
         Комментарий: \(comment)
-        
-        Смета:
-        \(estimateLinesText ?? "Смета пуста")
+        Смета: \(safeEstimate)
         """
         
+        // Используем [String: Any], но кладем только проверенные типы
         let body: [String: Any] = [
             "phone": phone,
             "email": email,
             "estimate": fullEstimate
         ]
+        
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 5
+        let session = URLSession(configuration: config)
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -174,11 +208,40 @@ struct RequestFormSheet: View {
         do {
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
         } catch {
-            print("Ошибка JSON: \(error)")
+            self.isSending = false
             return
         }
         
-        URLSession.shared.dataTask(with: request).resume()
+        session.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                self.isSending = false
+                
+                if let error = error as NSError? {
+                    self.alertTitle = "Сбой сети"
+                    let vpnCodes = [NSURLErrorSecureConnectionFailed, NSURLErrorCannotConnectToHost, NSURLErrorTimedOut, NSURLErrorNetworkConnectionLost, -9807, -9802, -9838, -1200]
+                    
+                    if vpnCodes.contains(error.code) {
+                        self.alertMessage = "Защищенное соединение заблокировано. Если включен VPN — отключите его (код: \(error.code))"
+                    } else {
+                        self.alertMessage = error.localizedDescription
+                    }
+                    self.showAlert = true
+                    return
+                }
+                
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        self.alertTitle = "Успешно"
+                        self.alertMessage = "Заявка принята!"
+                        self.onSubmit(name, phone, email, comment, safeEstimate)
+                    } else {
+                        self.alertTitle = "Ошибка сервера"
+                        self.alertMessage = "Статус: \(httpResponse.statusCode)"
+                    }
+                    self.showAlert = true
+                }
+            }
+        }.resume()
     }
 
     private var consentText: AttributedString {
