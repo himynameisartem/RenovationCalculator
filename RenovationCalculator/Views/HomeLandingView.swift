@@ -155,7 +155,7 @@ struct HomeLandingView: View {
         VStack(spacing: 14) {
             HomeActionCard(
                 title: "Калькулятор",
-                subtitle: "Рассчитайте стоимость\nремонта квартиры",
+                subtitle: "Самостоятельно рассчитайте стоимость\nремонта квартиры",
                 icon: "plus.forwardslash.minus",
                 accentColor: Color(red: 150/255, green: 200/255, blue: 255/255),
                 foregroundColor: .white,
@@ -230,7 +230,7 @@ struct HomeLandingView: View {
  
             HomeActionCard(
                 title: "Актуальный прайс",
-                subtitle: "Посмотрите актуальные\nцены на работы",
+                subtitle: "Наш ИИ анализирует цены огромного количества компаний",
                 icon: "banknote",
                 accentColor: Color(red: 108/255, green: 174/255, blue: 95/255),
                 foregroundColor: .black,
