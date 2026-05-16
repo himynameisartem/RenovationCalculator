@@ -17,7 +17,7 @@ struct RequestFormSheet: View {
     @State private var isSending = false
     @FocusState private var focusedField: Field?
     
-    private let policyURL = URL(string: "https://example.com")!
+    private let policyURL = URL(string: "https://skfamily.moscow/Privacy_Policy.pdf")!
     
     private enum Field: Hashable {
         case name, phone, email, comment

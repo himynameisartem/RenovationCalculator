@@ -13,7 +13,7 @@ struct HomeLandingView: View {
     @State private var showShareSheet = false
     @State private var downloadErrorText: String?
     @State private var showDownloadError = false
-    private let pricePDFURL = URL(string: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf")!
+    private let pricePDFURL = URL(string: "https://skfamily.moscow/price.pdf")!
 
     init(
         onOpenCalculator: @escaping () -> Void = {},
