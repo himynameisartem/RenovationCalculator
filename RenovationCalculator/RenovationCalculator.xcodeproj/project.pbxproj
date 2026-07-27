@@ -38,8 +38,16 @@
 		31A0F3D62F753D8E00B1A112 /* SavedEstimatesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */; };
 		31A0F3D82F753F7C00B1A112 /* FinalEstimateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */; };
 		31A0F3DA2F7554F200B1A112 /* LaunchLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A0F3D92F7554F200B1A112 /* LaunchLoadingView.swift */; };
+		31CE97392FC747410089DDEA /* AppMetricaBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31CE97382FC747400089DDEA /* AppMetricaBridge.swift */; };
+		31CE973C2FC747410089DDEA /* AppMetricaCore in Frameworks */ = {isa = PBXBuildFile; productRef = 31CE973A2FC747410089DDEA /* AppMetricaCore */; };
 		31E4A0B73042B5E30068D7A1 /* HomeLandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31E4A0B63042B5E30068D7A1 /* HomeLandingView.swift */; };
 		31FAC8452FAD04420082E141 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FAC8442FAD04420082E141 /* NetworkManager.swift */; };
+		31FFB1A82FC8330200F2A001 /* AnalyticsStartupManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FFB1A72FC8330200F2A001 /* AnalyticsStartupManager.swift */; };
+		31FFB1AA2FC84D0100F2A001 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 31FFB1A92FC84D0100F2A001 /* PrivacyInfo.xcprivacy */; };
+		8A1000013100000000000001 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000003100000000000001 /* ChatMessage.swift */; };
+		8A1000033100000000000001 /* ChatAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000023100000000000001 /* ChatAPIClient.swift */; };
+		8A1000053100000000000001 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000043100000000000001 /* ChatViewModel.swift */; };
+		8A1000073100000000000001 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000063100000000000001 /* ChatBubbleView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -75,8 +83,15 @@
 		31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedEstimatesViewModel.swift; sourceTree = "<group>"; };
 		31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinalEstimateViewModel.swift; sourceTree = "<group>"; };
 		31A0F3D92F7554F200B1A112 /* LaunchLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchLoadingView.swift; sourceTree = "<group>"; };
+		31CE97382FC747400089DDEA /* AppMetricaBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMetricaBridge.swift; sourceTree = "<group>"; };
 		31E4A0B63042B5E30068D7A1 /* HomeLandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeLandingView.swift; sourceTree = "<group>"; };
 		31FAC8442FAD04420082E141 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		31FFB1A72FC8330200F2A001 /* AnalyticsStartupManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsStartupManager.swift; sourceTree = "<group>"; };
+		31FFB1A92FC84D0100F2A001 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		8A1000003100000000000001 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
+		8A1000023100000000000001 /* ChatAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAPIClient.swift; sourceTree = "<group>"; };
+		8A1000043100000000000001 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		8A1000063100000000000001 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31CE973C2FC747410089DDEA /* AppMetricaCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +113,7 @@
 				3105BE7E2F47307400268CC4 /* MainEstimateViewModel.swift */,
 				31A0F3D52F753D8E00B1A112 /* SavedEstimatesViewModel.swift */,
 				31A0F3D72F753F7C00B1A112 /* FinalEstimateViewModel.swift */,
+				8A1000043100000000000001 /* ChatViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -128,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				3105BE5A2F47212000268CC4 /* Assets.xcassets */,
+				31FFB1A92FC84D0100F2A001 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -142,6 +160,7 @@
 				3105BE672F4723C600268CC4 /* WorkItem.swift */,
 				310172B32F72829800C54158 /* RoomInput.swift */,
 				310172B52F7282C600C54158 /* RoomType.swift */,
+				8A1000003100000000000001 /* ChatMessage.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -153,6 +172,7 @@
 				310172AC2F727DA600C54158 /* CatalogService.swift */,
 				310172AD2F727DA600C54158 /* EstimateSaveService.swift */,
 				310172A82F726A9300C54158 /* SavedEstimatesStore.swift */,
+				8A1000023100000000000001 /* ChatAPIClient.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -171,6 +191,7 @@
 				3155C1A82F640F91005C06F1 /* QuantitySheetView.swift */,
 				3155C19F2F63E0C7005C06F1 /* RoomsInputView.swift */,
 				310172A62F72672500C54158 /* SavedEstimatesView.swift */,
+				8A1000063100000000000001 /* ChatBubbleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -178,7 +199,9 @@
 		3105BE742F4725EC00268CC4 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				31FFB1A72FC8330200F2A001 /* AnalyticsStartupManager.swift */,
 				3105BE562F47211F00268CC4 /* RenovationCalculatorApp.swift */,
+				31CE97382FC747400089DDEA /* AppMetricaBridge.swift */,
 				3105BE752F4725FA00268CC4 /* RootView.swift */,
 				310172AA2F726AA100C54158 /* AppRouter.swift */,
 			);
@@ -219,6 +242,7 @@
 			);
 			name = RenovationCalculator;
 			packageProductDependencies = (
+				31CE973A2FC747410089DDEA /* AppMetricaCore */,
 			);
 			productName = RenovationCalculator;
 			productReference = 3105BE532F47211E00268CC4 /* RenovationCalculator.app */;
@@ -248,6 +272,9 @@
 			);
 			mainGroup = 3105BE4A2F47211E00268CC4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				31CE973B2FC747410089DDEA /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3105BE542F47211E00268CC4 /* Products */;
 			projectDirPath = "";
@@ -264,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3105BE5B2F47212000268CC4 /* Assets.xcassets in Resources */,
+				31FFB1AA2FC84D0100F2A001 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,8 +302,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31FFB1A82FC8330200F2A001 /* AnalyticsStartupManager.swift in Sources */,
+				8A1000013100000000000001 /* ChatMessage.swift in Sources */,
 				3105BE762F4725FA00268CC4 /* RootView.swift in Sources */,
 				3155C1A92F640F91005C06F1 /* QuantitySheetView.swift in Sources */,
+				8A1000033100000000000001 /* ChatAPIClient.swift in Sources */,
 				3155C1A22F63E0DD005C06F1 /* RoomsInputViewModel.swift in Sources */,
 				3155C1AD2F642800005C06F1 /* SummarySheetView.swift in Sources */,
 				3105BE592F47211F00268CC4 /* MainEstimateView.swift in Sources */,
@@ -288,10 +319,12 @@
 				3105BE7D2F472F0300268CC4 /* CatalogLoader.swift in Sources */,
 				310172AB2F726AA100C54158 /* AppRouter.swift in Sources */,
 				3105BE642F47236900268CC4 /* Category.swift in Sources */,
+				31CE97392FC747410089DDEA /* AppMetricaBridge.swift in Sources */,
 				3105BE782F472A0C00268CC4 /* Catalog.swift in Sources */,
 				3155C1AF2F642AC0005C06F1 /* FinalEstimateView.swift in Sources */,
 				31E4A0B73042B5E30068D7A1 /* HomeLandingView.swift in Sources */,
 				31A0F3D82F753F7C00B1A112 /* FinalEstimateViewModel.swift in Sources */,
+				8A1000053100000000000001 /* ChatViewModel.swift in Sources */,
 				31A0F3DA2F7554F200B1A112 /* LaunchLoadingView.swift in Sources */,
 				3105BE682F4723C600268CC4 /* WorkItem.swift in Sources */,
 				31FAC8452FAD04420082E141 /* NetworkManager.swift in Sources */,
@@ -301,6 +334,7 @@
 				3155C1A72F63FC54005C06F1 /* Extension+View.swift in Sources */,
 				310172B42F72829800C54158 /* RoomInput.swift in Sources */,
 				3119B3A52FAB503B00C8C596 /* ShareSheetView.swift in Sources */,
+				8A1000073100000000000001 /* ChatBubbleView.swift in Sources */,
 				3105BE662F4723BB00268CC4 /* WorkSection.swift in Sources */,
 				3119B39F2FAB3FA000C8C596 /* OnboardingOverlayView.swift in Sources */,
 				3105BE572F47211F00268CC4 /* RenovationCalculatorApp.swift in Sources */,
@@ -440,8 +474,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RenovationCalculator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = HZU66MWZY7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -459,7 +494,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ArtemKudryavtsev.ToDoListProject.RenovationCalculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -477,8 +512,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = RenovationCalculator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = HZU66MWZY7;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -496,7 +532,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ArtemKudryavtsev.ToDoListProject.RenovationCalculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -531,6 +567,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		31CE973B2FC747410089DDEA /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/appmetrica/appmetrica-sdk-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		31CE973A2FC747410089DDEA /* AppMetricaCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31CE973B2FC747410089DDEA /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3105BE4B2F47211E00268CC4 /* Project object */;
 }

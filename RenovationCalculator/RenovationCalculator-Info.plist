@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict/>
+<dict>
+	<key>APPMETRICA_API_KEY</key>
+	<string>ee4489d1-2491-424a-926d-d0858d1563cf</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.skfamily.renovationcalculator</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>renovation</string>
+			</array>
+		</dict>
+	</array>
+</dict>
 </plist>

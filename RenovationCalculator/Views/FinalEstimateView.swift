@@ -39,9 +39,9 @@ struct FinalEstimateView: View {
     // Статический массив — UUID создаётся один раз, не пересоздаётся при рендере
     private static let allCompanies: [CompanyPlaceholder] = [
         CompanyPlaceholder(
-            name: "ГК Поколение", logoName: "pokolenieLogo",
-            websiteURL: URL(string: "https://gkpokolenie.ru")!,
-            phoneURL: URL(string: "tel:+79581005418")!, phone: "+7 958 100-54-18"),
+            name: "Remstar", logoName: "remstarLogo",
+            websiteURL: URL(string: "https://remstar-remont.ru")!,
+            phoneURL: URL(string: "tel:+74954874972")!, phone: "+7 495 487-49-72"),
         CompanyPlaceholder(
             name: "Легион", logoName: "legionLogo",
             websiteURL: URL(string: "https://legionremont.ru")!,
@@ -52,8 +52,8 @@ struct FinalEstimateView: View {
             phoneURL: URL(string: "tel:+79158303600")!, phone: "+7 915 830-36-00"),
         CompanyPlaceholder(
             name: "ТЛР Групп", logoName: "tlrLogo",
-            websiteURL: URL(string: "https://skfamily.moscow")!,
-            phoneURL: URL(string: "tel:++74950217123")!, phone: "++7 495 021-71-23"),
+            websiteURL: URL(string: "https://tlr-stroy.ru")!,
+            phoneURL: URL(string: "tel:+74950217123")!, phone: "+7 495 021-71-23"),
 //        CompanyPlaceholder(
 //            name: "СК Фемели", logoName: "femeliLogo",
 //            websiteURL: URL(string: "https://skfamily.moscow")!,

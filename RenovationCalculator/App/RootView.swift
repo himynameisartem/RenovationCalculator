@@ -22,8 +22,10 @@ struct RootView: View {
     @StateObject private var store: SavedEstimatesStore
     @StateObject private var router: AppRouter
     @StateObject private var savedEstimatesViewModel: SavedEstimatesViewModel
+    @StateObject private var chatViewModel = ChatViewModel()
 
     @State private var selectedTab: RootTab
+    @State private var isChatOpen = false
 
     @State private var homeStackID = UUID()
     @State private var calculatorStackID = UUID()
@@ -33,6 +35,7 @@ struct RootView: View {
     @State private var showLaunchProgress = false
     @State private var isAppReady = false
     @State private var didFinishLaunchIntro = false
+    @State private var didStartAnalytics = false
     @State private var activeOnboardingTab: RootTab?
 
     private let homeOnboardingSteps: [OnboardingStep] = [
@@ -55,6 +58,11 @@ struct RootView: View {
             title: "Получите актуальный прайс.",
             subtitle: "Для вашего удобства наш искусственный интеллект провел анализ цен огромного количества строительных компаний и готов предоставить вам самые актуальные данные.",
             imageName: "home2"
+        ),
+        OnboardingStep(
+            title: "Спросите у ИИ.",
+            subtitle: "На ваши вопросы по ремонту и услугам компании ответит наш ИИ.",
+            imageName: "home5"
         )
     ]
     private let calculatorOnboardingSteps: [OnboardingStep] = [
@@ -162,11 +170,16 @@ struct RootView: View {
                 }
                 .tint(Color(red: 88/255, green: 154/255, blue: 244/255))
                 .onChange(of: selectedTab) { _, newTab in
+                    if newTab != .home {
+                        isChatOpen = false
+                    }
                     resetStack(for: newTab)
                     showOnboardingIfNeeded(for: newTab)
                 }
                 .onReceive(router.$rootScreen.dropFirst()) { screen in
                     switch screen {
+                    case .home:
+                        openRootTab(.home)
                     case .rooms:
                         openRootTab(.calculator)
                     case .savedEstimates:
@@ -175,6 +188,10 @@ struct RootView: View {
                 }
                 .id(router.rootViewID)
             }
+        }
+        .onOpenURL { url in
+            router.handleIncomingURL(url)
+            AppMetricaBridge.reportOpen(url: url)
         }
         .overlay {
             if let tab = activeOnboardingTab {
@@ -197,11 +214,18 @@ struct RootView: View {
                 .zIndex(1000)
             }
         }
+        .overlay {
+            if !isShowingLaunchScreen && selectedTab == .home && activeOnboardingTab == nil {
+                ChatBubbleView(viewModel: chatViewModel, isOpen: $isChatOpen)
+                    .zIndex(900)
+            }
+        }
         .environmentObject(store)
         .environmentObject(router)
         .onChange(of: isShowingLaunchScreen) { _, isVisible in
             if !isVisible {
                 showOnboardingIfNeeded(for: selectedTab)
+                startAnalyticsIfNeeded()
             }
         }
         .task {
@@ -226,6 +250,12 @@ struct RootView: View {
                 }
             }
         }
+    }
+
+    private func startAnalyticsIfNeeded() {
+        guard !didStartAnalytics else { return }
+        didStartAnalytics = true
+        AnalyticsStartupManager.start()
     }
 
     private func openRootTab(_ tab: RootTab) {
@@ -254,6 +284,7 @@ struct RootView: View {
     private func forceShowOnboarding(for tab: RootTab) {
         guard !isShowingLaunchScreen else { return }
         withAnimation(.easeInOut(duration: 0.2)) {
+            isChatOpen = false
             activeOnboardingTab = tab
         }
     }
