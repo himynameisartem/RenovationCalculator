@@ -6,6 +6,8 @@ struct HomeLandingView: View {
     let onOpenRequest: () -> Void
     let onOpenPrice: () -> Void
     let onShowHelp: () -> Void
+    let chatViewModel: ChatViewModel?
+    @Binding var isChatOpen: Bool
     @State private var showRequestForm = false
     @State private var showPriceConfirm = false
     @State private var isDownloadingPrice = false
@@ -13,18 +15,23 @@ struct HomeLandingView: View {
     @State private var showShareSheet = false
     @State private var downloadErrorText: String?
     @State private var showDownloadError = false
+    @State private var cardsBottom: CGFloat = 0
     private let pricePDFURL = URL(string: "https://skfamily.moscow/price.pdf")!
 
     init(
         onOpenCalculator: @escaping () -> Void = {},
         onOpenRequest: @escaping () -> Void = {},
         onOpenPrice: @escaping () -> Void = {},
-        onShowHelp: @escaping () -> Void = {}
+        onShowHelp: @escaping () -> Void = {},
+        chatViewModel: ChatViewModel? = nil,
+        isChatOpen: Binding<Bool> = .constant(false)
     ) {
         self.onOpenCalculator = onOpenCalculator
         self.onOpenRequest = onOpenRequest
         self.onOpenPrice = onOpenPrice
         self.onShowHelp = onShowHelp
+        self.chatViewModel = chatViewModel
+        _isChatOpen = isChatOpen
     }
     
     var body: some View {
@@ -57,6 +64,17 @@ struct HomeLandingView: View {
             .buttonStyle(.plain)
             .padding(.top, 32)
             .padding(.trailing, 16)
+
+            if let chatViewModel {
+                GeometryReader { proxy in
+                    ChatBubbleView(
+                        viewModel: chatViewModel,
+                        isOpen: $isChatOpen,
+                        cardsBottom: cardsBottom,
+                        bottomBoundary: proxy.frame(in: .global).maxY
+                    )
+                }
+            }
         }
         .background(Color(UIColor.systemGroupedBackground))
         .navigationBarBackButtonHidden(true)
@@ -265,6 +283,24 @@ struct HomeLandingView: View {
                 }
             )
         }
+        .background {
+            GeometryReader { proxy in
+                let bottom = proxy.frame(in: .global).maxY
+
+                Color.clear
+                    .onAppear {
+                        updateCardsBottom(bottom)
+                    }
+                    .onChange(of: bottom) { _, newBottom in
+                        updateCardsBottom(newBottom)
+                    }
+            }
+        }
+    }
+
+    private func updateCardsBottom(_ value: CGFloat) {
+        guard abs(cardsBottom - value) > 0.5 else { return }
+        cardsBottom = value
     }
     
     private func downloadPricePDF() async {
@@ -355,7 +391,7 @@ struct HomeLandingView: View {
         }
     }
 }
- 
+
 // MARK: - HomeActionCard
  
 private struct HomeActionCard: View {

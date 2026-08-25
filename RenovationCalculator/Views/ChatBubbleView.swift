@@ -3,7 +3,12 @@ import SwiftUI
 struct ChatBubbleView: View {
     @ObservedObject var viewModel: ChatViewModel
     @Binding var isOpen: Bool
+    let cardsBottom: CGFloat
+    let bottomBoundary: CGFloat
     @State private var keyboardHeight: CGFloat = 0
+    @State private var isChatHintVisible = true
+    @State private var isChatHintExpanded = false
+    @State private var chatHintTask: Task<Void, Never>?
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -17,9 +22,18 @@ struct ChatBubbleView: View {
                 }
 
                 if keyboardHeight == 0 && !isOpen {
-                    chatButton
-                        .padding(.trailing, 34)
-                        .padding(.bottom, 62)
+                    let controlHeight: CGFloat = isChatHintVisible && isChatHintExpanded ? 68 : 58
+
+                    Group {
+                        if isChatHintVisible {
+                            chatHintButton(width: geometry.size.width - 32)
+                                .padding(.horizontal, 16)
+                        } else {
+                            chatButton
+                                .padding(.trailing, 16)
+                        }
+                    }
+                    .padding(.bottom, chatBottomPadding(in: geometry, controlHeight: controlHeight))
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
@@ -31,6 +45,12 @@ struct ChatBubbleView: View {
             withAnimation(.easeOut(duration: 0.22)) {
                 keyboardHeight = 0
             }
+        }
+        .onAppear {
+            scheduleChatHint()
+        }
+        .onDisappear {
+            chatHintTask?.cancel()
         }
     }
 
@@ -62,6 +82,113 @@ struct ChatBubbleView: View {
                 .shadow(color: Color.black.opacity(0.22), radius: 18, x: 0, y: 8)
         }
         .buttonStyle(.plain)
+    }
+
+    private func chatHintButton(width: CGFloat) -> some View {
+        let height: CGFloat = isChatHintExpanded ? 68 : 58
+
+        return HStack(spacing: 0) {
+            Button(action: dismissChatHint) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .frame(width: isChatHintExpanded ? 44 : 0, height: height)
+                    .opacity(isChatHintExpanded ? 1 : 0)
+            }
+            .buttonStyle(.plain)
+            .allowsHitTesting(isChatHintExpanded)
+            .accessibilityLabel("Закрыть подсказку")
+
+            Button {
+                withAnimation(.spring(response: 0.32, dampingFraction: 0.86)) {
+                    isChatHintVisible = false
+                    isOpen = true
+                }
+            } label: {
+                HStack(spacing: 10) {
+                    Text("Есть вопрос по ремонту?\nСпросите ИИ-помощника")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .opacity(isChatHintExpanded ? 1 : 0)
+
+                    Spacer(minLength: 0)
+
+                    Image(systemName: "message.fill")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(.white)
+                        .frame(width: 58, height: height)
+                }
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(width: isChatHintExpanded ? width : 58, height: height, alignment: .trailing)
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(red: 63/255, green: 123/255, blue: 227/255),
+                    Color(red: 91/255, green: 166/255, blue: 242/255)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .clipShape(Capsule())
+        .shadow(color: Color.black.opacity(0.22), radius: 18, x: 0, y: 8)
+    }
+
+    private func dismissChatHint() {
+        chatHintTask?.cancel()
+
+        withAnimation(.easeOut(duration: 0.25)) {
+            isChatHintExpanded = false
+        }
+
+        Task {
+            try? await Task.sleep(for: .milliseconds(260))
+            guard !Task.isCancelled else { return }
+            isChatHintVisible = false
+        }
+    }
+
+    private func scheduleChatHint() {
+        chatHintTask?.cancel()
+        isChatHintVisible = true
+        isChatHintExpanded = false
+
+        chatHintTask = Task {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .milliseconds(250))
+                guard !Task.isCancelled else { return }
+
+                withAnimation(.spring(response: 0.5, dampingFraction: 0.82)) {
+                    isChatHintExpanded = true
+                }
+
+                try? await Task.sleep(for: .seconds(7))
+                guard !Task.isCancelled else { return }
+
+                withAnimation(.easeOut(duration: 0.25)) {
+                    isChatHintExpanded = false
+                }
+
+                try? await Task.sleep(for: .seconds(5))
+            }
+        }
+    }
+
+    private func chatBottomPadding(in geometry: GeometryProxy, controlHeight: CGFloat) -> CGFloat {
+        let screenBottom = geometry.frame(in: .global).maxY
+        let availableGap = bottomBoundary - cardsBottom - controlHeight
+
+        guard cardsBottom > 0, availableGap >= 0 else {
+            return 16
+        }
+
+        // All values are in the Home screen's coordinate space.
+        let controlBottom = cardsBottom + (availableGap / 2) + controlHeight
+        return screenBottom - controlBottom
     }
 
     private func chatCard(in geometry: GeometryProxy) -> some View {

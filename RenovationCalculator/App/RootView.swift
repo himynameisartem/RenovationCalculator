@@ -116,7 +116,9 @@ struct RootView: View {
                             },
                             onShowHelp: {
                                 forceShowOnboarding(for: .home)
-                            }
+                            },
+                            chatViewModel: chatViewModel,
+                            isChatOpen: $isChatOpen
                         )
                     }
                     .id(homeStackID)
@@ -212,12 +214,6 @@ struct RootView: View {
                 )
                 .transition(.opacity)
                 .zIndex(1000)
-            }
-        }
-        .overlay {
-            if !isShowingLaunchScreen && selectedTab == .home && activeOnboardingTab == nil {
-                ChatBubbleView(viewModel: chatViewModel, isOpen: $isChatOpen)
-                    .zIndex(900)
             }
         }
         .environmentObject(store)
