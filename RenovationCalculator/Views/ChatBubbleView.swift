@@ -1,27 +1,67 @@
 import SwiftUI
 
 struct ChatBubbleView: View {
+    @Environment(\.scenePhase) private var scenePhase
     @ObservedObject var viewModel: ChatViewModel
     @Binding var isOpen: Bool
     let cardsBottom: CGFloat
     let bottomBoundary: CGFloat
-    @State private var keyboardHeight: CGFloat = 0
+    @State private var keyboardFrame: CGRect = .zero
     @State private var isChatHintVisible = true
     @State private var isChatHintExpanded = false
     @State private var chatHintTask: Task<Void, Never>?
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
+        chatOverlay
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { notification in
+                updateKeyboardHeight(from: notification)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+                withAnimation(.easeOut(duration: 0.22)) {
+                    keyboardFrame = .zero
+                }
+            }
+            .onAppear {
+                scheduleChatHint()
+            }
+            .onDisappear {
+                chatHintTask?.cancel()
+            }
+            .onChange(of: isOpen) { _, isOpen in
+                if isOpen {
+                    viewModel.refreshSessionState()
+                }
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active {
+                    viewModel.refreshSessionState()
+                }
+            }
+    }
+
+    @ViewBuilder
+    private var chatOverlay: some View {
+        chatOverlayContent
+    }
+
+    private var chatOverlayContent: some View {
         GeometryReader { geometry in
+            let keyboardOverlap = keyboardOverlap(in: geometry)
+            let isKeyboardVisible = keyboardFrame != .zero
+
             ZStack(alignment: .bottomTrailing) {
                 if isOpen {
                     chatCard(in: geometry)
                         .padding(.horizontal, 16)
-                        .padding(.bottom, cardBottomPadding)
+                        .padding(.bottom, cardBottomPadding(
+                            keyboardOverlap: keyboardOverlap,
+                            isKeyboardVisible: isKeyboardVisible
+                        ))
                         .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
 
-                if keyboardHeight == 0 && !isOpen {
+                if !isKeyboardVisible && !isOpen {
                     let controlHeight: CGFloat = isChatHintVisible && isChatHintExpanded ? 68 : 58
 
                     Group {
@@ -38,24 +78,20 @@ struct ChatBubbleView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
         }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { notification in
-            updateKeyboardHeight(from: notification)
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
-            withAnimation(.easeOut(duration: 0.22)) {
-                keyboardHeight = 0
-            }
-        }
-        .onAppear {
-            scheduleChatHint()
-        }
-        .onDisappear {
-            chatHintTask?.cancel()
-        }
     }
 
-    private var cardBottomPadding: CGFloat {
-        keyboardHeight > 0 ? keyboardHeight + 12 : 104
+    private func cardBottomPadding(
+        keyboardOverlap: CGFloat,
+        isKeyboardVisible: Bool
+    ) -> CGFloat {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let screenKeyboardHeight = keyboardFrame == .zero
+                ? 0
+                : max(0, UIScreen.main.bounds.height - keyboardFrame.minY)
+            return screenKeyboardHeight > 0 ? screenKeyboardHeight + 12 : 104
+        }
+
+        return isKeyboardVisible ? 12 : 104
     }
 
     private var chatButton: some View {
@@ -208,23 +244,38 @@ struct ChatBubbleView: View {
     }
 
     private func chatCardHeight(in geometry: GeometryProxy) -> CGFloat {
-        let reservedBottom = keyboardHeight > 0 ? keyboardHeight + 28 : 220
-        let availableHeight = geometry.size.height - reservedBottom - geometry.safeAreaInsets.top - 16
-        return min(max(availableHeight, 320), 500)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let screenKeyboardHeight = keyboardFrame == .zero
+                ? 0
+                : max(0, UIScreen.main.bounds.height - keyboardFrame.minY)
+            let reservedBottom = screenKeyboardHeight > 0 ? screenKeyboardHeight + 28 : 220
+            let availableHeight = geometry.size.height - reservedBottom - geometry.safeAreaInsets.top - 16
+            return min(max(availableHeight, 320), 500)
+        }
+
+        guard keyboardFrame != .zero else {
+            let availableHeight = geometry.size.height - 220 - geometry.safeAreaInsets.top - 16
+            return min(max(availableHeight, 320), 500)
+        }
+
+        // GeometryReader is already reduced to the area above the keyboard on iPhone.
+        let availableHeight = geometry.size.height - geometry.safeAreaInsets.top - 24
+        return max(280, availableHeight)
     }
 
     private func updateKeyboardHeight(from notification: Notification) {
         guard
-            let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
-            let duration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double
+            let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect
         else { return }
 
-        let screenHeight = UIScreen.main.bounds.height
-        let height = max(0, screenHeight - frame.minY)
+        // UIKit animates the safe-area change. Animating this value separately caused
+        // an additional size transition for the chat card.
+        keyboardFrame = frame
+    }
 
-        withAnimation(.easeOut(duration: duration)) {
-            keyboardHeight = height
-        }
+    private func keyboardOverlap(in geometry: GeometryProxy) -> CGFloat {
+        guard keyboardFrame != .zero else { return 0 }
+        return max(0, geometry.frame(in: .global).maxY - keyboardFrame.minY)
     }
 
     private var header: some View {
@@ -308,6 +359,13 @@ struct ChatBubbleView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
 
+            if viewModel.isSessionLimitReached {
+                Text("Достигнут лимит сообщений. Диалог очистится автоматически через некоторое время.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+
             Text("Ответы генерирует ИИ, он может ошибаться. Проверяйте важную информацию у менеджера.")
                 .font(.system(size: 11))
                 .foregroundColor(.secondary)
@@ -325,6 +383,7 @@ struct ChatBubbleView: View {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .fill(Color(UIColor.secondarySystemBackground))
                     )
+                    .disabled(viewModel.isSessionLimitReached)
 
                 Button {
                     viewModel.send()
@@ -335,10 +394,18 @@ struct ChatBubbleView: View {
                         .frame(width: 38, height: 38)
                         .background(
                             Circle()
-                                .fill(viewModel.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.gray.opacity(0.5) : Color.blue)
+                                .fill(
+                                    viewModel.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isSessionLimitReached
+                                        ? Color.gray.opacity(0.5)
+                                        : Color.blue
+                                )
                         )
                 }
-                .disabled(viewModel.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || viewModel.isSending)
+                .disabled(
+                    viewModel.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                        || viewModel.isSending
+                        || viewModel.isSessionLimitReached
+                )
             }
         }
         .padding(14)

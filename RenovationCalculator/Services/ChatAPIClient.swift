@@ -8,13 +8,20 @@ final class ChatAPIClient {
         self.session = session
     }
 
-    func send(message: String) async throws -> String {
+    func send(messages: [ChatMessage]) async throws -> String {
         var request = URLRequest(url: endpoint)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 30
 
-        let body = ChatRequest(message: message)
+        let body = ChatRequest(
+            messages: messages.map {
+                ChatRequestMessage(
+                    role: $0.role == .user ? "user" : "assistant",
+                    content: $0.text
+                )
+            }
+        )
         request.httpBody = try JSONEncoder().encode(body)
 
         let (data, response) = try await session.data(for: request)
@@ -32,7 +39,12 @@ final class ChatAPIClient {
 }
 
 private struct ChatRequest: Encodable {
-    let message: String
+    let messages: [ChatRequestMessage]
+}
+
+private struct ChatRequestMessage: Encodable {
+    let role: String
+    let content: String
 }
 
 private struct ChatResponse: Decodable {
