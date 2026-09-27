@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 
 struct ChatBubbleView: View {
@@ -10,6 +11,15 @@ struct ChatBubbleView: View {
     @State private var isChatHintVisible = true
     @State private var isChatHintExpanded = false
     @State private var chatHintTask: Task<Void, Never>?
+    @State private var photoHintTask: Task<Void, Never>?
+    @State private var isPhotoHintVisible = false
+    @State private var isPhotoSourceOpen = false
+    @State private var isGalleryOpen = false
+    @State private var isCameraOpen = false
+    @State private var isCameraBatchOpen = false
+    @State private var isCameraUnavailable = false
+    @State private var pickerItems: [PhotosPickerItem] = []
+    @State private var capturedImages: [Data] = []
     @FocusState private var isInputFocused: Bool
 
     var body: some View {
@@ -27,16 +37,68 @@ struct ChatBubbleView: View {
             }
             .onDisappear {
                 chatHintTask?.cancel()
+                photoHintTask?.cancel()
             }
             .onChange(of: isOpen) { _, isOpen in
                 if isOpen {
                     viewModel.refreshSessionState()
+                    showPhotoHintIfNeeded()
                 }
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
                     viewModel.refreshSessionState()
                 }
+            }
+            .confirmationDialog("Добавить фото", isPresented: $isPhotoSourceOpen) {
+                Button("Камера") {
+                    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                        isCameraOpen = true
+                    } else {
+                        isCameraUnavailable = true
+                    }
+                }
+                Button("Галерея") { isGalleryOpen = true }
+                Button("Отмена", role: .cancel) {}
+            }
+            .photosPicker(
+                isPresented: $isGalleryOpen,
+                selection: $pickerItems,
+                maxSelectionCount: 3,
+                matching: .images
+            )
+            .onChange(of: pickerItems) { _, items in
+                loadGalleryImages(items)
+            }
+            .fullScreenCover(isPresented: $isCameraOpen) {
+                CameraImagePicker { image in
+                    guard let data = image.jpegData(compressionQuality: 0.9) else { return }
+                    capturedImages.append(data)
+                    Task {
+                        try? await Task.sleep(for: .milliseconds(350))
+                        isCameraBatchOpen = true
+                    }
+                }
+                .ignoresSafeArea()
+            }
+            .confirmationDialog(
+                "Сделано фото: \(capturedImages.count) из 3",
+                isPresented: $isCameraBatchOpen
+            ) {
+                if capturedImages.count < 3 {
+                    Button("Сделать ещё фото") { isCameraOpen = true }
+                }
+                Button("Отправить \(capturedImages.count) фото") {
+                    let images = capturedImages
+                    capturedImages = []
+                    viewModel.beginPhotoEstimate(imageData: images)
+                }
+                Button("Отменить", role: .destructive) {
+                    capturedImages = []
+                }
+            }
+            .alert("Камера недоступна", isPresented: $isCameraUnavailable) {
+                Button("OK", role: .cancel) {}
             }
     }
 
@@ -373,6 +435,21 @@ struct ChatBubbleView: View {
                 .frame(maxWidth: .infinity)
 
             HStack(spacing: 10) {
+                Button {
+                    dismissKeyboard()
+                    isPhotoSourceOpen = true
+                } label: {
+                    Image(systemName: "camera.fill")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.blue)
+                        .frame(width: 38, height: 38)
+                        .background(
+                            Circle().fill(Color.blue.opacity(0.10))
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Рассчитать по фотографиям")
+
                 TextField("Ваш вопрос", text: $viewModel.draft, axis: .vertical)
                     .lineLimit(1...3)
                     .font(.system(size: 15))
@@ -407,6 +484,13 @@ struct ChatBubbleView: View {
                         || viewModel.isSessionLimitReached
                 )
             }
+            .overlay(alignment: .bottomLeading) {
+                if isPhotoHintVisible {
+                    photoHintBubble
+                        .offset(x: 0, y: -52)
+                        .transition(.scale(scale: 0.9, anchor: .bottomLeading).combined(with: .opacity))
+                }
+            }
         }
         .padding(14)
         .background(Color(UIColor.systemBackground))
@@ -416,6 +500,71 @@ struct ChatBubbleView: View {
         guard let lastID = viewModel.messages.last?.id else { return }
         withAnimation(.easeOut(duration: 0.2)) {
             proxy.scrollTo(lastID, anchor: .bottom)
+        }
+    }
+
+    private func loadGalleryImages(_ items: [PhotosPickerItem]) {
+        guard !items.isEmpty else { return }
+        Task {
+            var images: [Data] = []
+            for item in items {
+                if let data = try? await item.loadTransferable(type: Data.self) {
+                    images.append(data)
+                }
+            }
+            pickerItems = []
+            if !images.isEmpty {
+                viewModel.beginPhotoEstimate(imageData: images)
+            }
+        }
+    }
+
+    private var photoHintBubble: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Text("Для более точного расчёта можно загрузить до трёх фотографий помещения")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button {
+                hidePhotoHint()
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .frame(width: 255)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.blue)
+        )
+        .shadow(color: .black.opacity(0.18), radius: 10, y: 5)
+        .onTapGesture {
+            hidePhotoHint()
+        }
+    }
+
+    private func showPhotoHintIfNeeded() {
+        guard viewModel.consumePhotoHint() else { return }
+        photoHintTask?.cancel()
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.82)) {
+            isPhotoHintVisible = true
+        }
+        photoHintTask = Task {
+            try? await Task.sleep(for: .seconds(7))
+            guard !Task.isCancelled else { return }
+            hidePhotoHint()
+        }
+    }
+
+    private func hidePhotoHint() {
+        photoHintTask?.cancel()
+        withAnimation(.easeOut(duration: 0.2)) {
+            isPhotoHintVisible = false
         }
     }
 
@@ -449,15 +598,75 @@ private struct ChatMessageRow: View {
     }
 
     private var bubble: some View {
-        Text(message.text)
-            .font(.system(size: 14))
-            .foregroundColor(message.role == .assistant ? .primary : .white)
+        VStack(alignment: .leading, spacing: 8) {
+            if !message.imageData.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        ForEach(Array(message.imageData.enumerated()), id: \.offset) { _, data in
+                            if let image = UIImage(data: data) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 96, height: 96)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                            }
+                        }
+                    }
+                }
+            }
+
+            if !message.text.isEmpty {
+                Text(message.text)
+                    .font(.system(size: 14))
+                    .foregroundColor(message.role == .assistant ? .primary : .white)
+            }
+        }
             .padding(.horizontal, 13)
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 16, style: .continuous)
                     .fill(message.role == .assistant ? Color(UIColor.secondarySystemBackground) : Color.blue)
             )
+    }
+}
+
+private struct CameraImagePicker: UIViewControllerRepresentable {
+    let onImage: (UIImage) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let controller = UIImagePickerController()
+        controller.sourceType = .camera
+        controller.delegate = context.coordinator
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    final class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: CameraImagePicker
+
+        init(parent: CameraImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
+            if let image = info[.originalImage] as? UIImage {
+                parent.onImage(image)
+            }
+            parent.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
+        }
     }
 }
 

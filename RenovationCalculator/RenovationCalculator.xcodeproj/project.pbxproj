@@ -48,6 +48,14 @@
 		8A1000033100000000000001 /* ChatAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000023100000000000001 /* ChatAPIClient.swift */; };
 		8A1000053100000000000001 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000043100000000000001 /* ChatViewModel.swift */; };
 		8A1000073100000000000001 /* ChatBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1000063100000000000001 /* ChatBubbleView.swift */; };
+		8B2000013200000000000001 /* MobileCVService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001013200000000000001 /* MobileCVService.swift */; };
+		8B2000023200000000000001 /* PhotoEstimateAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001023200000000000001 /* PhotoEstimateAPIClient.swift */; };
+		8B2000103200000000000001 /* SurfaceSegmentation.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001103200000000000001 /* SurfaceSegmentation.mlpackage */; };
+		8B2000113200000000000001 /* DINOv2Global.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001113200000000000001 /* DINOv2Global.mlpackage */; };
+		8B2000123200000000000001 /* DINOv2Local.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001123200000000000001 /* DINOv2Local.mlpackage */; };
+		8B2000133200000000000001 /* WallMaterialHead.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001133200000000000001 /* WallMaterialHead.mlpackage */; };
+		8B2000143200000000000001 /* FloorMaterialHead.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001143200000000000001 /* FloorMaterialHead.mlpackage */; };
+		8B2000153200000000000001 /* CeilingMaterialHead.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 8B2001153200000000000001 /* CeilingMaterialHead.mlpackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +101,14 @@
 		8A1000043100000000000001 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
 		8A1000063100000000000001 /* ChatBubbleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatBubbleView.swift; sourceTree = "<group>"; };
 		8A1000083100000000000001 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8B2001013200000000000001 /* MobileCVService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCVService.swift; sourceTree = "<group>"; };
+		8B2001023200000000000001 /* PhotoEstimateAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoEstimateAPIClient.swift; sourceTree = "<group>"; };
+		8B2001103200000000000001 /* SurfaceSegmentation.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = SurfaceSegmentation.mlpackage; sourceTree = "<group>"; };
+		8B2001113200000000000001 /* DINOv2Global.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = DINOv2Global.mlpackage; sourceTree = "<group>"; };
+		8B2001123200000000000001 /* DINOv2Local.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = DINOv2Local.mlpackage; sourceTree = "<group>"; };
+		8B2001133200000000000001 /* WallMaterialHead.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = WallMaterialHead.mlpackage; sourceTree = "<group>"; };
+		8B2001143200000000000001 /* FloorMaterialHead.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = FloorMaterialHead.mlpackage; sourceTree = "<group>"; };
+		8B2001153200000000000001 /* CeilingMaterialHead.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = CeilingMaterialHead.mlpackage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +164,7 @@
 			children = (
 				3105BE5A2F47212000268CC4 /* Assets.xcassets */,
 				31FFB1A92FC84D0100F2A001 /* PrivacyInfo.xcprivacy */,
+				8B2002003200000000000001 /* Models */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -175,6 +192,8 @@
 				310172AD2F727DA600C54158 /* EstimateSaveService.swift */,
 				310172A82F726A9300C54158 /* SavedEstimatesStore.swift */,
 				8A1000023100000000000001 /* ChatAPIClient.swift */,
+				8B2001013200000000000001 /* MobileCVService.swift */,
+				8B2001023200000000000001 /* PhotoEstimateAPIClient.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -225,6 +244,19 @@
 				3155C1A62F63FC54005C06F1 /* Extension+View.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		8B2002003200000000000001 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8B2001103200000000000001 /* SurfaceSegmentation.mlpackage */,
+				8B2001113200000000000001 /* DINOv2Global.mlpackage */,
+				8B2001123200000000000001 /* DINOv2Local.mlpackage */,
+				8B2001133200000000000001 /* WallMaterialHead.mlpackage */,
+				8B2001143200000000000001 /* FloorMaterialHead.mlpackage */,
+				8B2001153200000000000001 /* CeilingMaterialHead.mlpackage */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -304,6 +336,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B2000103200000000000001 /* SurfaceSegmentation.mlpackage in Sources */,
+				8B2000113200000000000001 /* DINOv2Global.mlpackage in Sources */,
+				8B2000123200000000000001 /* DINOv2Local.mlpackage in Sources */,
+				8B2000133200000000000001 /* WallMaterialHead.mlpackage in Sources */,
+				8B2000143200000000000001 /* FloorMaterialHead.mlpackage in Sources */,
+				8B2000153200000000000001 /* CeilingMaterialHead.mlpackage in Sources */,
+				8B2000013200000000000001 /* MobileCVService.swift in Sources */,
+				8B2000023200000000000001 /* PhotoEstimateAPIClient.swift in Sources */,
 				31FFB1A82FC8330200F2A001 /* AnalyticsStartupManager.swift in Sources */,
 				8A1000013100000000000001 /* ChatMessage.swift in Sources */,
 				3105BE762F4725FA00268CC4 /* RootView.swift in Sources */,
@@ -478,13 +518,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = RenovationCalculator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = HZU66MWZY7;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = LWHM94CH8H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "RenovationCalculator-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Калькулятор Ремонта";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Локальная проверка расчета по фотографиям через сервер разработки на Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -496,7 +537,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ArtemKudryavtsev.ToDoListProject.RenovationCalculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -516,13 +557,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = RenovationCalculator.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
-				DEVELOPMENT_TEAM = HZU66MWZY7;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = LWHM94CH8H;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "RenovationCalculator-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Калькулятор Ремонта";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Локальная проверка расчета по фотографиям через сервер разработки на Mac.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -534,7 +576,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.3;
+				MARKETING_VERSION = 1.2.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ArtemKudryavtsev.ToDoListProject.RenovationCalculator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
