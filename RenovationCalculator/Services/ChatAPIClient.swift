@@ -1,7 +1,11 @@
 import Foundation
 
+enum BackendConfiguration {
+    static let baseURL = "https://cucosinepsiey.beget.app"
+}
+
 final class ChatAPIClient {
-    private let endpoint = URL(string: "https://cucosinepsiey.beget.app/chat")!
+    private let endpoint = URL(string: BackendConfiguration.baseURL + "/chat")!
     private let session: URLSession
 
     init(session: URLSession = .shared) {

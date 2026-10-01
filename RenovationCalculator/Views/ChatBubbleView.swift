@@ -18,6 +18,7 @@ struct ChatBubbleView: View {
     @State private var isCameraOpen = false
     @State private var isCameraBatchOpen = false
     @State private var isCameraUnavailable = false
+    @State private var isClearConversationConfirmationOpen = false
     @State private var pickerItems: [PhotosPickerItem] = []
     @State private var capturedImages: [Data] = []
     @FocusState private var isInputFocused: Bool
@@ -99,6 +100,21 @@ struct ChatBubbleView: View {
             }
             .alert("Камера недоступна", isPresented: $isCameraUnavailable) {
                 Button("OK", role: .cancel) {}
+            }
+            .confirmationDialog(
+                "Очистить диалог?",
+                isPresented: $isClearConversationConfirmationOpen,
+                titleVisibility: .visible
+            ) {
+                Button("Очистить", role: .destructive) {
+                    dismissKeyboard()
+                    pickerItems = []
+                    capturedImages = []
+                    viewModel.clearConversation()
+                }
+                Button("Отмена", role: .cancel) {}
+            } message: {
+                Text("Сообщения и результат анализа фотографий будут удалены.")
             }
     }
 
@@ -361,6 +377,22 @@ struct ChatBubbleView: View {
             }
 
             Spacer()
+
+            Button {
+                isClearConversationConfirmationOpen = true
+            } label: {
+                Image(systemName: "trash")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.secondary)
+                    .frame(width: 30, height: 30)
+                    .background(
+                        Circle()
+                            .fill(Color(UIColor.secondarySystemBackground))
+                    )
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Очистить диалог")
+            .disabled(viewModel.messages.count <= 1)
 
             Button {
                 closeChat()

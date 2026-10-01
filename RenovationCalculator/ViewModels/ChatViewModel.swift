@@ -43,7 +43,7 @@ final class ChatViewModel: ObservableObject {
     ) {
         self.apiClient = apiClient ?? ChatAPIClient()
         self.photoEstimateClient = photoEstimateClient ?? (try! PhotoEstimateAPIClient(
-            baseURL: "http://192.168.1.70:8000"
+            baseURL: BackendConfiguration.baseURL
         ))
     }
 
@@ -128,35 +128,49 @@ final class ChatViewModel: ObservableObject {
                 pendingSurfaces = surfaces
                 let missingSurfaces = missingSurfaceNames(in: surfaces)
                 photoStep = .awaitingArea
+                let prompt: String
                 if missingSurfaces.isEmpty {
-                    messages.append(ChatMessage(
-                        role: .assistant,
-                        text: "Введите площадь помещения в м²."
-                    ))
+                    prompt = "Введите площадь помещения в м²."
                 } else {
-                    messages.append(ChatMessage(
-                        role: .assistant,
-                        text: "Для более точного результата добавьте фото, где лучше видны \(joinedSurfaceNames(missingSurfaces)). Либо сразу введите площадь помещения — расчёт будет выполнен по имеющимся фотографиям."
-                    ))
+                    prompt = "Для более точного результата добавьте фото, где лучше видны \(joinedSurfaceNames(missingSurfaces)). Либо сразу введите площадь помещения — расчёт будет выполнен по имеющимся фотографиям."
                 }
+                let promptMessage = ChatMessage(role: .assistant, text: prompt)
+                messages.append(promptMessage)
+                conversationMessages.append(ChatMessage(
+                    role: .user,
+                    text: photoAnalysisContext(surfaces: surfaces)
+                ))
+                conversationMessages.append(promptMessage)
             } catch MobileCVError.notRoom {
                 pendingSurfaces = nil
                 pendingArea = nil
                 pendingImageData = []
                 photoStep = .idle
-                messages.append(ChatMessage(
+                let failureMessage = ChatMessage(
                     role: .assistant,
                     text: "На снимке не удалось увидеть помещение. Добавьте фото комнаты общим планом, чтобы были видны стены и пол или потолок."
+                )
+                messages.append(failureMessage)
+                conversationMessages.append(ChatMessage(
+                    role: .user,
+                    text: "Пользователь загрузил фотографию, но CV не смог подтвердить помещение и не определил материалы."
                 ))
+                conversationMessages.append(failureMessage)
             } catch MobileCVError.noSurfaces {
                 pendingSurfaces = nil
                 pendingArea = nil
                 pendingImageData = []
                 photoStep = .idle
-                messages.append(ChatMessage(
+                let failureMessage = ChatMessage(
                     role: .assistant,
                     text: "По этому снимку не удалось оценить состояние комнаты. Добавьте другое фото общим планом."
+                )
+                messages.append(failureMessage)
+                conversationMessages.append(ChatMessage(
+                    role: .user,
+                    text: "Пользователь загрузил фотографию комнаты, но CV не определил на ней материалы поверхностей."
                 ))
+                conversationMessages.append(failureMessage)
             } catch {
                 photoStep = .idle
                 errorText = error.localizedDescription
@@ -171,14 +185,7 @@ final class ChatViewModel: ObservableObject {
 
     private func sendPhotoParameter(_ message: String) {
         guard let value = firstNumber(in: message), value > 0 else {
-            draft = ""
-            messages.append(ChatMessage(role: .user, text: message))
-            messages.append(ChatMessage(
-                role: .assistant,
-                text: photoStep == .awaitingArea
-                    ? "Укажите площадь числом, например: 18,5."
-                    : "Укажите высоту числом, например: 2,7."
-            ))
+            sendPhotoFollowUp(message)
             return
         }
 
@@ -216,6 +223,15 @@ final class ChatViewModel: ObservableObject {
                 )
                 let assistantMessage = ChatMessage(role: .assistant, text: response.answer)
                 messages.append(assistantMessage)
+                conversationMessages.append(ChatMessage(
+                    role: .user,
+                    text: photoConversationContext(
+                        surfaces: surfaces,
+                        area: area,
+                        height: value,
+                        estimateAnswer: response.answer
+                    )
+                ))
                 conversationMessages.append(assistantMessage)
             } catch {
                 errorText = error.localizedDescription
@@ -232,12 +248,72 @@ final class ChatViewModel: ObservableObject {
         }
     }
 
+    private func sendPhotoFollowUp(_ message: String) {
+        draft = ""
+        errorText = nil
+        let userMessage = ChatMessage(role: .user, text: message)
+        messages.append(userMessage)
+        conversationMessages.append(userMessage)
+        remainingQuestions = max(0, remainingQuestions - 1)
+        lastQuestionAt = Date()
+        scheduleExpiration()
+
+        let requestMessages = Array(conversationMessages.dropLast().suffix(maxHistoryMessages)) + [userMessage]
+        let continuation = photoStep == .awaitingArea
+            ? "Чтобы продолжить расчёт, введите площадь помещения в м²."
+            : "Чтобы продолжить расчёт, введите высоту потолка в метрах."
+        isSending = true
+        Task {
+            do {
+                let answer = try await apiClient.send(messages: requestMessages)
+                let assistantMessage = ChatMessage(
+                    role: .assistant,
+                    text: answer + "\n\n" + continuation
+                )
+                messages.append(assistantMessage)
+                conversationMessages.append(assistantMessage)
+            } catch {
+                errorText = error.localizedDescription
+                messages.append(ChatMessage(role: .assistant, text: continuation))
+            }
+            isSending = false
+        }
+    }
+
     private func firstNumber(in text: String) -> Double? {
         let normalized = text.replacingOccurrences(of: ",", with: ".")
         guard let range = normalized.range(of: #"\d+(?:\.\d+)?"#, options: .regularExpression) else {
             return nil
         }
         return Double(normalized[range])
+    }
+
+    private func photoConversationContext(
+        surfaces: RoomSurfaceAnalysis,
+        area: Double,
+        height: Double,
+        estimateAnswer: String
+    ) -> String {
+        func materials(_ items: [DetectedMaterial]) -> String {
+            guard !items.isEmpty else { return "не определены" }
+            return items.map {
+                "\($0.material)=\(String(format: "%.3f", $0.confidence))"
+            }.joined(separator: ", ")
+        }
+
+        return """
+        [PHOTO_OBJECT_CONTEXT] Подтверждённый результат фото-расчёта для текущего объекта: \(estimateAnswer) Параметры объекта: площадь \(area) м², высота \(height) м. Результат CV: стены: \(materials(surfaces.walls)); пол: \(materials(surfaces.floor)); потолок: \(materials(surfaces.ceiling)). Значения уверенности не выше 0.80 считай предположениями.
+        """
+    }
+
+    private func photoAnalysisContext(surfaces: RoomSurfaceAnalysis) -> String {
+        func materials(_ items: [DetectedMaterial]) -> String {
+            guard !items.isEmpty else { return "не определены" }
+            return items.prefix(2).map {
+                "\($0.material)=\(String(format: "%.3f", $0.confidence))"
+            }.joined(separator: ", ")
+        }
+        return "Пользователь загрузил фото комнаты. CV: стены: \(materials(surfaces.walls)); пол: \(materials(surfaces.floor)); потолок: \(materials(surfaces.ceiling)). Уверенность не выше 0.80 — предположение."
     }
 
     private func missingSurfaceNames(in surfaces: RoomSurfaceAnalysis) -> [String] {
@@ -257,6 +333,10 @@ final class ChatViewModel: ObservableObject {
     func refreshSessionState(now: Date = Date()) {
         guard let lastQuestionAt else { return }
         guard now.timeIntervalSince(lastQuestionAt) >= sessionTimeout else { return }
+        resetSession()
+    }
+
+    func clearConversation() {
         resetSession()
     }
 

@@ -20,7 +20,5 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Камера используется для фотографирования помещения.</string>
 </dict>
 </plist>

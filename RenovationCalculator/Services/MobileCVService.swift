@@ -50,8 +50,8 @@ actor MobileCVService {
 
     private let segmentationSize = 512
     private let outputThreshold = 0.40
-    private let roomStateThreshold = 0.60
-    private let distinctCeilingThreshold = 0.75
+    private let unfinishedWallThreshold = 0.80
+    private let veryCertainFinishThreshold = 0.97
 
     private let wallClasses = [
         "bare_unfinished_wall",
@@ -96,12 +96,16 @@ actor MobileCVService {
             .ceiling: 0
         ]
         var visibleSurfaceKinds = Set<SurfaceKind>()
+        var hasRoomSceneEvidence = false
 
         for data in imageData {
             guard let image = orientedCGImage(from: data) else {
                 throw MobileCVError.invalidImage
             }
             let regions = try segment(image: image)
+            if hasRoomScene(in: image) {
+                hasRoomSceneEvidence = true
+            }
             for surface in [SurfaceKind.walls, .floor, .ceiling] {
                 let surfaceRegions = regions[surface, default: []]
                 let coveredPixels = surfaceRegions.reduce(0) { $0 + $1.area }
@@ -137,10 +141,19 @@ actor MobileCVService {
             + "ceiling=\(rounded(ceilingCoverage))"
         )
 #endif
-        guard visibleSurfaceKinds.count >= 2,
-              visibleSurfaceKinds.contains(.walls),
-              wallCoverage >= 0.12,
-              totalCoverage >= 0.45 else {
+        let hasSurfaceGeometry = visibleSurfaceKinds.count >= 2
+            && visibleSurfaceKinds.contains(.walls)
+            && wallCoverage >= 0.12
+            && totalCoverage >= 0.45
+        let hasAllRoomSurfaces = visibleSurfaceKinds.count == 3
+            && wallCoverage >= 0.06
+            && floorCoverage >= 0.05
+            && ceilingCoverage >= 0.05
+            && totalCoverage >= 0.30
+        let hasSemanticRoom = hasRoomSceneEvidence
+            && !visibleSurfaceKinds.isEmpty
+            && totalCoverage >= 0.15
+        guard hasSurfaceGeometry || hasAllRoomSurfaces || hasSemanticRoom else {
             throw MobileCVError.notRoom
         }
 
@@ -175,6 +188,27 @@ actor MobileCVService {
         let configuration = MLModelConfiguration()
         configuration.computeUnits = .all
         return try MLModel(contentsOf: url, configuration: configuration)
+    }
+
+    private func hasRoomScene(in image: CGImage) -> Bool {
+        let request = VNClassifyImageRequest()
+        let handler = VNImageRequestHandler(cgImage: image, orientation: .up)
+        do {
+            try handler.perform([request])
+        } catch {
+            return false
+        }
+        let roomTerms = [
+            "room", "kitchen", "bedroom", "bathroom", "interior", "indoor",
+            "apartment", "office", "dining", "living", "home", "furniture",
+            "couch", "sofa", "table", "chair", "cabinet", "wardrobe", "bed"
+        ]
+        guard let results = request.results else { return false }
+        return results.prefix(20).contains { observation in
+            guard observation.confidence >= 0.03 else { return false }
+            let identifier = observation.identifier.lowercased()
+            return roomTerms.contains { identifier.contains($0) }
+        }
     }
 
     private func orientedCGImage(from data: Data) -> CGImage? {
@@ -391,22 +425,36 @@ actor MobileCVService {
         let walls = scores[.walls] ?? [:]
         let floor = scores[.floor] ?? [:]
         let ceiling = scores[.ceiling] ?? [:]
-        let bareWall = walls["bare_unfinished_wall"] ?? 0
-        let bareFloor = floor["bare_unfinished_floor"] ?? 0
-        let strongestFinishedWall = walls
-            .filter { $0.key != "bare_unfinished_wall" }
+        let unfinishedWall = [
+            walls["bare_unfinished_wall"] ?? 0,
+            walls["exposed_drywall"] ?? 0,
+            walls["unfinished_plaster_or_putty"] ?? 0
+        ].max() ?? 0
+        let unfinishedWallMaterials = [
+            "bare_unfinished_wall", "exposed_drywall", "unfinished_plaster_or_putty"
+        ]
+        let unfinishedRoom = unfinishedWall >= unfinishedWallThreshold
+        guard unfinishedRoom else { return }
+
+        scores[.walls] = walls.filter {
+            unfinishedWallMaterials.contains($0.key)
+                || $0.value >= veryCertainFinishThreshold
+        }
+
+        let strongestFinishedFloor = floor
+            .filter { $0.key != "bare_unfinished_floor" }
             .map(\.value)
             .max() ?? 0
-        let unfinishedRoom = bareWall >= roomStateThreshold
-            && bareFloor >= roomStateThreshold
-            && bareWall >= strongestFinishedWall
-        let distinctiveCeiling = max(
-            ceiling["stretch_ceiling"] ?? 0,
-            ceiling["glued_light_ceiling_finish"] ?? 0,
-            ceiling["modular_or_panel_ceiling"] ?? 0
-        )
-        if unfinishedRoom && distinctiveCeiling < distinctCeilingThreshold {
-            scores[.ceiling] = ["bare_unfinished_ceiling": min(bareWall, bareFloor)]
+        if strongestFinishedFloor < veryCertainFinishThreshold {
+            scores[.floor] = ["bare_unfinished_floor": unfinishedWall]
+        }
+
+        let strongestFinishedCeiling = ceiling
+            .filter { $0.key != "bare_unfinished_ceiling" }
+            .map(\.value)
+            .max() ?? 0
+        if strongestFinishedCeiling < veryCertainFinishThreshold {
+            scores[.ceiling] = ["bare_unfinished_ceiling": unfinishedWall]
         }
     }
 
